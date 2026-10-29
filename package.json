@@ -1,0 +1,11 @@
+{
+  "name": "dev-toolkit-marketplace",
+  "version": "1.0.0",
+  "description": "Public community repository & static distribution hub for Dev-Toolkit Mini-Apps",
+  "type": "module",
+  "scripts": {
+    "package": "node scripts/package-apps.mjs",
+    "validate": "node scripts/validate-pr.mjs"
+  },
+  "license": "MIT"
+}

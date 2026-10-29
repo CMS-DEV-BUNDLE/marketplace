@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'">
+  <title>Json4Swift - JSON to Swift Model Generator</title>
+  <style>
+    :root {
+      --bg: #F6F7F5;
+      --surface: #FFFFFF;
+      --surface-2: #EEF0ED;
+      --ink: #1B1F1D;
+      --muted: #5E6861;
+      --line: #DFE3DF;
+      --accent: #E65A28; /* Swift orange/accent */
+      --accent-ink: #FFFFFF;
+      --code-bg: #F9FAF9;
+      --verified: #1F8A3D;
+      --danger: #B3321F;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #121413;
+        --surface: #1A1D1B;
+        --surface-2: #222623;
+        --ink: #E6E9E6;
+        --muted: #8B948D;
+        --line: #2A2F2C;
+        --accent: #F06A38;
+        --accent-ink: #0B1412;
+        --code-bg: #151816;
+        --verified: #4CC46F;
+        --danger: #F0716A;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #121413;
+      --surface: #1A1D1B;
+      --surface-2: #222623;
+      --ink: #E6E9E6;
+      --muted: #8B948D;
+      --line: #2A2F2C;
+      --accent: #F06A38;
+      --accent-ink: #0B1412;
+      --code-bg: #151816;
+      --verified: #4CC46F;
+      --danger: #F0716A;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    main {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 12px 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Top Toolbar */
+    .toolbar-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(230, 90, 40, 0.12);
+      border-radius: 6px;
+      border: 1px solid rgba(230, 90, 40, 0.25);
+      color: var(--accent);
+    }
+
+    h1 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .subtitle {
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    button.btn {
+      height: 28px;
+      padding: 0 10px;
+      background: var(--surface);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      font-size: 11.5px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: background 120ms ease, border-color 120ms ease;
+    }
+    button.btn:hover { background: var(--surface-2); }
+    button.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+    button.btn-primary {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: var(--accent);
+    }
+    button.btn-primary:hover { opacity: 0.92; background: var(--accent); }
+
+    /* Compact Options Panel */
+    .options-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+    }
+
+    .option-label {
+      color: var(--muted);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .form-input, .form-select {
+      height: 26px;
+      padding: 0 6px;
+      background: var(--bg);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      font-size: 11.5px;
+      outline: none;
+      color-scheme: light dark;
+    }
+    .form-input:focus, .form-select:focus {
+      border-color: var(--accent);
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+    }
+
+    /* Dual Editor Panes with Generous Length */
+    .editors-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .editors-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .editor-pane {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .pane-header {
+      padding: 8px 12px;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .pane-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge {
+      font-size: 10.5px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    .badge-ok {
+      background: rgba(31, 138, 61, 0.12);
+      color: var(--verified);
+      border: 1px solid var(--verified);
+    }
+    .badge-err {
+      background: rgba(179, 50, 31, 0.12);
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+
+    /* Lightweight Zero-Telemetry Code Editor */
+    .editor-wrap {
+      display: flex;
+      position: relative;
+      background: var(--code-bg);
+      overflow: hidden;
+      height: clamp(520px, 72vh, 1050px);
+      min-height: 380px;
+      resize: vertical;
+    }
+
+    .editor-wrap:focus-within {
+      outline: 2px solid var(--accent);
+      outline-offset: -1px;
+    }
+
+    .gutter {
+      user-select: none;
+      background: var(--surface-2);
+      border-right: 1px solid var(--line);
+      color: var(--muted);
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 11px;
+      line-height: 20px;
+      padding: 8px 0 24px 0;
+      width: 48px;
+      min-width: 48px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .gutter-line {
+      height: 20px;
+      line-height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 6px;
+      font-size: 10.5px;
+    }
+
+    .fold-btn {
+      width: 14px;
+      height: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 3px;
+      cursor: pointer;
+      border-radius: 2px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1;
+    }
+
+    .fold-btn:hover {
+      background: var(--line);
+      color: var(--ink);
+    }
+
+    .fold-btn.empty {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .line-num {
+      min-width: 20px;
+      text-align: right;
+      color: var(--muted);
+    }
+
+    .editor-wrap textarea {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      color: var(--ink);
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 12px;
+      line-height: 20px;
+      padding: 8px 10px 24px 10px;
+      white-space: pre;
+      overflow: auto;
+      resize: none;
+      outline: none;
+      tab-size: 2;
+    }
+
+    .pane-footer {
+      padding: 4px 12px;
+      background: var(--surface-2);
+      border-top: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+      font-family: ui-monospace, monospace;
+    }
+
+    /* Usage Card */
+    .usage-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 11.5px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .usage-code {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 11.5px;
+      background: var(--surface-2);
+      padding: 3px 6px;
+      border-radius: 4px;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <!-- Top Toolbar -->
+    <div class="toolbar-card">
+      <div class="title-group">
+        <div class="brand-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M19.5 7.5C18.2 5.5 16 4 13.5 4c-5.5 0-9.5 4.5-9.5 10 0 3.2 1.5 5.8 4 7-1.5-2.2-1.8-4.8-1-7.2.7-2.1 2.4-3.8 4.5-4.8-1 1.2-1.5 2.7-1.5 4.2 0 3.3 2.7 6 6 6 2.5 0 4.6-1.5 5.5-3.7-.8.5-1.8.7-2.8.7-2.8 0-5-2.2-5-5 0-1.8.9-3.4 2.3-4.3 1.5.8 2.7 2.1 3.2 3.8.3-.9.3-1.9 0-2.9z"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Json4Swift</h1>
+          <div class="subtitle">Convert JSON payloads into Swift Codable models instantly</div>
+        </div>
+      </div>
+
+      <div class="toolbar-actions">
+        <button id="btn-sample" class="btn" title="Load sample API response">Sample JSON</button>
+        <button id="btn-format" class="btn" title="Format and beautify input JSON">Prettify</button>
+        <button id="btn-clear" class="btn" title="Clear input">Clear</button>
+        <button id="btn-copy" class="btn btn-primary" title="Copy generated Swift code to clipboard">Copy Swift</button>
+        <button id="btn-download" class="btn" title="Download .swift file">Download .swift</button>
+      </div>
+    </div>
+
+    <!-- Options Bar -->
+    <div class="options-card">
+      <div class="option-item">
+        <span class="option-label">Root Model:</span>
+        <input type="text" id="opt-root-name" class="form-input" value="UserResponse" style="width: 110px;">
+      </div>
+
+      <div class="option-item">
+        <span class="option-label">Type:</span>
+        <select id="opt-model-type" class="form-select">
+          <option value="struct" selected>struct</option>
+          <option value="class">class</option>
+        </select>
+      </div>
+
+      <div class="option-item">
+        <span class="option-label">Protocol:</span>
+        <select id="opt-protocol" class="form-select">
+          <option value="Codable" selected>Codable</option>
+          <option value="Decodable">Decodable</option>
+          <option value="Identifiable, Codable">Identifiable, Codable</option>
+        </select>
+      </div>
+
+      <div class="option-item">
+        <span class="option-label">Properties:</span>
+        <select id="opt-prop-mutability" class="form-select">
+          <option value="let" selected>let (Immutable)</option>
+          <option value="var">var (Mutable)</option>
+        </select>
+      </div>
+
+      <div class="option-item">
+        <span class="option-label">Nullability:</span>
+        <select id="opt-optionals" class="form-select">
+          <option value="all" selected>All Optional (?)</option>
+          <option value="smart">Non-optional when present</option>
+        </select>
+      </div>
+
+      <div class="option-item">
+        <span class="option-label">Access:</span>
+        <select id="opt-access" class="form-select">
+          <option value="internal" selected>internal</option>
+          <option value="public">public</option>
+        </select>
+      </div>
+
+      <div class="option-item">
+        <span class="option-label">CodingKeys:</span>
+        <select id="opt-coding-keys" class="form-select">
+          <option value="auto" selected>Auto (when needed)</option>
+          <option value="always">Always</option>
+          <option value="never">Never</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Dual Panes: JSON Input Editor & Swift Output Editor -->
+    <div class="editors-grid">
+      <!-- Left: JSON Input -->
+      <div class="editor-pane">
+        <div class="pane-header">
+          <span class="pane-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            JSON Input Editor
+          </span>
+          <span id="json-status" class="badge badge-ok">Ready</span>
+        </div>
+        <div class="editor-wrap" id="wrap-json">
+          <div class="gutter" id="gutter-json"></div>
+          <textarea id="json-input" spellcheck="false" placeholder="Paste your raw JSON payload here..."></textarea>
+        </div>
+        <div class="pane-footer">
+          <span id="json-info">Ln 1, Col 1 • 0 chars</span>
+          <span id="json-lines-count">0 lines</span>
+        </div>
+      </div>
+
+      <!-- Right: Swift Output -->
+      <div class="editor-pane">
+        <div class="pane-header">
+          <span class="pane-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.5 7.5C18.2 5.5 16 4 13.5 4c-5.5 0-9.5 4.5-9.5 10 0 3.2 1.5 5.8 4 7-1.5-2.2-1.8-4.8-1-7.2.7-2.1 2.4-3.8 4.5-4.8-1 1.2-1.5 2.7-1.5 4.2 0 3.3 2.7 6 6 6 2.5 0 4.6-1.5 5.5-3.7-.8.5-1.8.7-2.8.7-2.8 0-5-2.2-5-5 0-1.8.9-3.4 2.3-4.3 1.5.8 2.7 2.1 3.2 3.8.3-.9.3-1.9 0-2.9z"/></svg>
+            Swift Code Output
+          </span>
+          <span id="swift-stats" class="badge" style="background: var(--surface); border: 1px solid var(--line); color: var(--muted);">0 models</span>
+        </div>
+        <div class="editor-wrap" id="wrap-swift">
+          <div class="gutter" id="gutter-swift"></div>
+          <textarea id="swift-output" readonly spellcheck="false" placeholder="Swift models will appear here in real time..."></textarea>
+        </div>
+        <div class="pane-footer">
+          <span id="swift-info">Swift 5 / 6 Codable</span>
+          <span id="swift-lines-count">0 lines</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Usage Preview Bar -->
+    <div class="usage-card">
+      <div>
+        <b>Quick Usage:</b> <span class="usage-code" id="usage-example">let model = try JSONDecoder().decode(UserResponse.self, from: jsonData)</span>
+      </div>
+      <div>100% Offline • Zero Telemetry • Safe Code Editor</div>
+    </div>
+  </main>
+
+  <script>
+    // Theme synchronization with host shell
+    if (window.toolkit?.theme?.onThemeChanged) {
+      window.toolkit.theme.onThemeChanged((isDark) => {
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+      });
+    }
+
+    // Reserved Swift keywords to escape or handle safely
+    const SWIFT_KEYWORDS = new Set([
+      'associatedtype', 'class', 'deinit', 'enum', 'extension', 'fileprivate', 'func', 'import', 'init',
+      'inout', 'internal', 'let', 'open', 'operator', 'private', 'protocol', 'public', 'rethrows', 'static',
+      'struct', 'subscript', 'typealias', 'var', 'break', 'case', 'continue', 'default', 'defer', 'do',
+      'else', 'fallthrough', 'for', 'guard', 'if', 'in', 'repeat', 'return', 'switch', 'where', 'while',
+      'as', 'Any', 'catch', 'false', 'is', 'nil', 'super', 'self', 'Self', 'throw', 'throws', 'true', 'try',
+      'description', 'id', 'Type'
+    ]);
+
+    // Sample JSON payload for quick testing
+    const SAMPLES = {
+      user: {
+        id: 101,
+        first_name: "Alex",
+        last_name: "Morgan",
+        is_active: true,
+        score: 98.5,
+        avatar_url: "https://example.com/avatar.jpg",
+        tags: ["swift", "ios", "developer"],
+        company: {
+          company_name: "Acme Corp",
+          founded_year: 2012,
+          is_public: false
+        },
+        contact_info: {
+          email: "alex@example.com",
+          phone_numbers: ["+1-555-0100", "+1-555-0199"]
+        }
+      }
+    };
+
+    // Helper functions for naming conversions
+    function toCamelCase(str) {
+      if (!str) return 'emptyKey';
+      let s = str.replace(/[^a-zA-Z0-9_]/g, '_');
+      s = s.replace(/[-_]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ''));
+      return s.charAt(0).toLowerCase() + s.slice(1);
+    }
+
+    function toPascalCase(str) {
+      const camel = toCamelCase(str);
+      return camel.charAt(0).toUpperCase() + camel.slice(1);
+    }
+
+    function escapeIdentifier(id) {
+      if (SWIFT_KEYWORDS.has(id)) {
+        return `\`${id}\``;
+      }
+      return id;
+    }
+
+    // --- Swift Model Generator Core Engine ---
+    class SwiftGenerator {
+      constructor(options = {}) {
+        this.rootName = options.rootName || 'Root';
+        this.modelType = options.modelType || 'struct';
+        this.protocolConformance = options.protocolConformance || 'Codable';
+        this.mutability = options.mutability || 'let';
+        this.allOptional = options.allOptional !== false;
+        this.accessLevel = options.accessLevel === 'public' ? 'public ' : '';
+        this.codingKeysMode = options.codingKeysMode || 'auto';
+        this.models = new Map();
+      }
+
+      generate(jsonVal) {
+        this.models.clear();
+
+        let topLevelType = '';
+        if (Array.isArray(jsonVal)) {
+          if (jsonVal.length === 0) {
+            return {
+              code: 'import Foundation\n\n// Input is an empty array; cannot infer properties.',
+              topLevelType: '[Any]',
+              modelCount: 0
+            };
+          }
+          let baseName = this.rootName.replace(/Response$/i, '');
+          const itemSuggested = baseName.endsWith('s') ? baseName.slice(0, -1) : baseName + 'Item';
+          const itemType = this.resolveArrayElement(jsonVal, itemSuggested);
+          topLevelType = `[${itemType}]`;
+        } else if (typeof jsonVal === 'object' && jsonVal !== null) {
+          topLevelType = this.extractModel(jsonVal, this.rootName);
+        } else {
+          return {
+            code: `import Foundation\n\n// Input is a primitive value (${typeof jsonVal}).`,
+            topLevelType: typeof jsonVal,
+            modelCount: 0
+          };
+        }
+
+        const lines = ['import Foundation', ''];
+
+        for (const [name, model] of this.models.entries()) {
+          const typeKeyword = this.modelType === 'class' ? 'final class' : 'struct';
+          let conforms = this.protocolConformance;
+          if (conforms.includes('Identifiable') && !model.fields.has('id')) {
+            conforms = 'Codable';
+          }
+
+          lines.push(`${this.accessLevel}${typeKeyword} ${name}: ${conforms} {`);
+
+          const codingKeyEntries = [];
+
+          for (const [key, field] of model.fields.entries()) {
+            const rawPropName = toCamelCase(key);
+            const propName = escapeIdentifier(rawPropName);
+            const optMark = (this.allOptional || field.isOptional) ? '?' : '';
+            lines.push(`    ${this.accessLevel}${this.mutability} ${propName}: ${field.type}${optMark}`);
+
+            const needsExplicitKey = rawPropName !== key || SWIFT_KEYWORDS.has(rawPropName);
+            codingKeyEntries.push({
+              propName,
+              rawKey: key,
+              needsExplicitKey
+            });
+          }
+
+          const shouldGenerateCodingKeys =
+            this.codingKeysMode === 'always' ||
+            (this.codingKeysMode === 'auto' && codingKeyEntries.some(e => e.needsExplicitKey));
+
+          if (shouldGenerateCodingKeys && this.codingKeysMode !== 'never') {
+            lines.push('');
+            lines.push('    enum CodingKeys: String, CodingKey {');
+            for (const entry of codingKeyEntries) {
+              if (entry.needsExplicitKey || this.codingKeysMode === 'always') {
+                lines.push(`        case ${entry.propName} = "${entry.rawKey}"`);
+              } else {
+                lines.push(`        case ${entry.propName}`);
+              }
+            }
+            lines.push('    }');
+          }
+
+          lines.push('}');
+          lines.push('');
+        }
+
+        return {
+          code: lines.join('\n').trim(),
+          topLevelType,
+          modelCount: this.models.size
+        };
+      }
+
+      extractModel(obj, suggestedName) {
+        const modelName = toPascalCase(suggestedName);
+
+        let model = this.models.get(modelName);
+        if (!model) {
+          model = { fields: new Map() };
+          this.models.set(modelName, model);
+        }
+
+        for (const [key, val] of Object.entries(obj)) {
+          const typeInfo = this.inferType(val, key, modelName);
+          const existing = model.fields.get(key);
+
+          if (!existing) {
+            model.fields.set(key, typeInfo);
+          } else {
+            if (existing.type !== typeInfo.type && typeInfo.type !== 'String') {
+              if ((existing.type === 'Int' && typeInfo.type === 'Double') || (existing.type === 'Double' && typeInfo.type === 'Int')) {
+                existing.type = 'Double';
+              }
+            }
+            if (typeInfo.isOptional) existing.isOptional = true;
+          }
+        }
+
+        return modelName;
+      }
+
+      resolveArrayElement(arr, suggestedItemName) {
+        if (arr.length === 0) return 'String';
+
+        const objects = arr.filter(item => typeof item === 'object' && item !== null && !Array.isArray(item));
+        if (objects.length > 0) {
+          const modelName = toPascalCase(suggestedItemName);
+          for (const item of objects) {
+            this.extractModel(item, modelName);
+          }
+          return modelName;
+        }
+
+        if (arr.some(item => typeof item === 'number')) {
+          const hasFloat = arr.some(item => typeof item === 'number' && !Number.isInteger(item));
+          return hasFloat ? 'Double' : 'Int';
+        }
+        if (arr.some(item => typeof item === 'boolean')) return 'Bool';
+        return 'String';
+      }
+
+      inferType(val, key, parentModelName) {
+        if (val === null || val === undefined) {
+          return { type: 'String', isOptional: true };
+        }
+
+        if (Array.isArray(val)) {
+          const childItemName = parentModelName + toPascalCase(key);
+          const elemType = this.resolveArrayElement(val, childItemName);
+          return { type: `[${elemType}]`, isOptional: false };
+        }
+
+        if (typeof val === 'object') {
+          const childModelName = parentModelName + toPascalCase(key);
+          const modelName = this.extractModel(val, childModelName);
+          return { type: modelName, isOptional: false };
+        }
+
+        if (typeof val === 'boolean') {
+          return { type: 'Bool', isOptional: false };
+        }
+
+        if (typeof val === 'number') {
+          return { type: Number.isInteger(val) ? 'Int' : 'Double', isOptional: false };
+        }
+
+        return { type: 'String', isOptional: false };
+      }
+    }
+
+    // --- Lightweight Zero-Telemetry Code Editor Factory ---
+    function createEditor(wrapEl, textareaEl, onChange) {
+      const gutter = wrapEl.querySelector('.gutter');
+      let fullText = textareaEl.value;
+      let activeFolds = {};
+
+      function findBracketFolds(text) {
+        const lines = text.split('\n');
+        const stack = [];
+        const folds = {};
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          for (let col = 0; col < line.length; col++) {
+            const ch = line[col];
+            if (ch === '"' || ch === "'") {
+              const q = ch;
+              col++;
+              while (col < line.length && line[col] !== q) {
+                if (line[col] === '\\') col++;
+                col++;
+              }
+              continue;
+            }
+            if (ch === '{' || ch === '[') {
+              stack.push({ ch, line: i });
+            } else if (ch === '}' || ch === ']') {
+              if (stack.length > 0) {
+                const top = stack[stack.length - 1];
+                if ((ch === '}' && top.ch === '{') || (ch === ']' && top.ch === '[')) {
+                  stack.pop();
+                  if (i > top.line) {
+                    folds[top.line] = i;
+                  }
+                }
+              }
+            }
+          }
+        }
+        return folds;
+      }
+
+      function renderGutterAndText(updateText) {
+        const allLines = fullText.length === 0 ? [''] : fullText.split('\n');
+        const folds = findBracketFolds(fullText);
+        let lineIdx = 0;
+        const displayedLines = [];
+        let gutterHtml = '';
+
+        while (lineIdx < allLines.length) {
+          const lineNum = lineIdx + 1;
+          const canFold = folds.hasOwnProperty(lineIdx);
+          const isFolded = activeFolds.hasOwnProperty(lineIdx);
+
+          if (isFolded) {
+            const endIdx = activeFolds[lineIdx];
+            const endLine = allLines[endIdx] || '';
+            const closeChar = endLine.trim().charAt(0) || (allLines[lineIdx].indexOf('[') !== -1 ? ']' : '}');
+            const comma = endLine.trim().endsWith(',') ? ',' : '';
+            displayedLines.push(allLines[lineIdx] + ' ... ' + closeChar + comma);
+            gutterHtml += `<div class="gutter-line"><span class="fold-btn" data-fold="${lineIdx}">&#9658;</span><span class="line-num">${lineNum}</span></div>`;
+            lineIdx = endIdx + 1;
+          } else {
+            displayedLines.push(allLines[lineIdx]);
+            const foldBtn = canFold
+              ? `<span class="fold-btn" data-fold="${lineIdx}">&#9660;</span>`
+              : '<span class="fold-btn empty"></span>';
+            gutterHtml += `<div class="gutter-line">${foldBtn}<span class="line-num">${lineNum}</span></div>`;
+            lineIdx++;
+          }
+        }
+
+        if (updateText) {
+          textareaEl.value = displayedLines.join('\n');
+        }
+        gutter.innerHTML = gutterHtml;
+        gutter.scrollTop = textareaEl.scrollTop;
+      }
+
+      gutter.addEventListener('click', (e) => {
+        const btn = e.target.closest('.fold-btn');
+        if (!btn || btn.dataset.fold === undefined) return;
+        const lineIdx = parseInt(btn.dataset.fold, 10);
+        const folds = findBracketFolds(fullText);
+        if (activeFolds.hasOwnProperty(lineIdx)) {
+          delete activeFolds[lineIdx];
+        } else if (folds.hasOwnProperty(lineIdx)) {
+          activeFolds[lineIdx] = folds[lineIdx];
+        }
+        renderGutterAndText(true);
+      });
+
+      textareaEl.addEventListener('scroll', () => {
+        gutter.scrollTop = textareaEl.scrollTop;
+      });
+
+      textareaEl.addEventListener('input', () => {
+        activeFolds = {};
+        fullText = textareaEl.value;
+        renderGutterAndText(false);
+        if (onChange) onChange();
+      });
+
+      // Handle Tab key indentation
+      textareaEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          const start = textareaEl.selectionStart;
+          const end = textareaEl.selectionEnd;
+          textareaEl.value = textareaEl.value.substring(0, start) + '  ' + textareaEl.value.substring(end);
+          textareaEl.selectionStart = textareaEl.selectionEnd = start + 2;
+          fullText = textareaEl.value;
+          renderGutterAndText(false);
+          if (onChange) onChange();
+        }
+      });
+
+      function set(val) {
+        fullText = val == null ? '' : String(val);
+        activeFolds = {};
+        renderGutterAndText(true);
+      }
+
+      function get() {
+        return fullText;
+      }
+
+      renderGutterAndText(true);
+
+      return {
+        set,
+        get,
+        sync: () => renderGutterAndText(true)
+      };
+    }
+
+    // Keep both editors in vertical size sync when user drags either handle
+    function syncEditorHeights(wrap1, wrap2) {
+      let syncing = false;
+      const ro = new ResizeObserver((entries) => {
+        if (syncing) return;
+        for (const entry of entries) {
+          const target = entry.target;
+          const other = target === wrap1 ? wrap2 : wrap1;
+          const h = target.style.height;
+          if (h && other.style.height !== h) {
+            syncing = true;
+            other.style.height = h;
+            syncing = false;
+            break;
+          }
+        }
+      });
+      ro.observe(wrap1);
+      ro.observe(wrap2);
+    }
+
+    // --- DOM Elements & Wireup ---
+    const txtJson = document.getElementById('json-input');
+    const txtSwift = document.getElementById('swift-output');
+    const wrapJson = document.getElementById('wrap-json');
+    const wrapSwift = document.getElementById('wrap-swift');
+
+    const jsonStatus = document.getElementById('json-status');
+    const swiftStats = document.getElementById('swift-stats');
+    const usageExample = document.getElementById('usage-example');
+    const jsonInfo = document.getElementById('json-info');
+    const jsonLinesCount = document.getElementById('json-lines-count');
+    const swiftLinesCount = document.getElementById('swift-lines-count');
+
+    const optRootName = document.getElementById('opt-root-name');
+    const optModelType = document.getElementById('opt-model-type');
+    const optProtocol = document.getElementById('opt-protocol');
+    const optPropMutability = document.getElementById('opt-prop-mutability');
+    const optOptionals = document.getElementById('opt-optionals');
+    const optAccess = document.getElementById('opt-access');
+    const optCodingKeys = document.getElementById('opt-coding-keys');
+
+    function updateCursorInfo() {
+      const pos = txtJson.selectionStart || 0;
+      const val = txtJson.value.substring(0, pos);
+      const lines = val.split('\n');
+      const line = lines.length;
+      const col = lines[lines.length - 1].length + 1;
+      const totalChars = txtJson.value.length;
+      jsonInfo.textContent = `Ln ${line}, Col ${col} • ${totalChars} chars`;
+    }
+
+    ['keyup', 'click', 'input'].forEach(evt => {
+      txtJson.addEventListener(evt, updateCursorInfo);
+    });
+
+    const edJson = createEditor(wrapJson, txtJson, runConversion);
+    const edSwift = createEditor(wrapSwift, txtSwift);
+    syncEditorHeights(wrapJson, wrapSwift);
+
+    function runConversion() {
+      const raw = edJson.get().trim();
+      updateCursorInfo();
+
+      const jsonLines = edJson.get().length ? edJson.get().split('\n').length : 0;
+      jsonLinesCount.textContent = `${jsonLines} line${jsonLines === 1 ? '' : 's'}`;
+
+      if (!raw) {
+        edSwift.set('');
+        jsonStatus.className = 'badge badge-ok';
+        jsonStatus.textContent = 'Ready';
+        swiftStats.textContent = '0 models';
+        swiftLinesCount.textContent = '0 lines';
+        usageExample.textContent = 'let model = try JSONDecoder().decode(Root.self, from: jsonData)';
+        return;
+      }
+
+      let parsed;
+      try {
+        parsed = JSON.parse(raw);
+        jsonStatus.className = 'badge badge-ok';
+        jsonStatus.textContent = 'Valid JSON';
+      } catch (err) {
+        jsonStatus.className = 'badge badge-err';
+        jsonStatus.textContent = 'JSON Syntax Error';
+        edSwift.set(`// Error parsing JSON:\n// ${err.message}`);
+        swiftStats.textContent = '0 models';
+        const swiftLines = edSwift.get().split('\n').length;
+        swiftLinesCount.textContent = `${swiftLines} lines`;
+        return;
+      }
+
+      const rootName = optRootName.value.trim() || 'Root';
+      const generator = new SwiftGenerator({
+        rootName: rootName,
+        modelType: optModelType.value,
+        protocolConformance: optProtocol.value,
+        mutability: optPropMutability.value,
+        allOptional: optOptionals.value === 'all',
+        accessLevel: optAccess.value,
+        codingKeysMode: optCodingKeys.value
+      });
+
+      const result = generator.generate(parsed);
+      edSwift.set(result.code);
+      swiftStats.textContent = `${result.modelCount} model${result.modelCount === 1 ? '' : 's'}`;
+
+      const swiftLines = result.code.split('\n').length;
+      swiftLinesCount.textContent = `${swiftLines} lines`;
+
+      const targetType = result.topLevelType || rootName;
+      usageExample.textContent = `let model = try JSONDecoder().decode(${targetType}.self, from: jsonData)`;
+    }
+
+    // Option changes trigger live conversion
+    [optRootName, optModelType, optProtocol, optPropMutability, optOptionals, optAccess, optCodingKeys].forEach(el => {
+      el.addEventListener('input', runConversion);
+      el.addEventListener('change', runConversion);
+    });
+
+    // Toolbar buttons
+    document.getElementById('btn-sample').addEventListener('click', () => {
+      edJson.set(JSON.stringify(SAMPLES.user, null, 2));
+      optRootName.value = 'UserResponse';
+      runConversion();
+    });
+
+    document.getElementById('btn-format').addEventListener('click', () => {
+      try {
+        const val = JSON.parse(edJson.get());
+        edJson.set(JSON.stringify(val, null, 2));
+        runConversion();
+      } catch {}
+    });
+
+    document.getElementById('btn-clear').addEventListener('click', () => {
+      edJson.set('');
+      runConversion();
+      txtJson.focus();
+    });
+
+    document.getElementById('btn-copy').addEventListener('click', () => {
+      const code = edSwift.get();
+      if (!code) return;
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = document.getElementById('btn-copy');
+        const oldText = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = oldText; }, 1500);
+      });
+    });
+
+    document.getElementById('btn-download').addEventListener('click', () => {
+      const code = edSwift.get();
+      if (!code) return;
+      const rootName = optRootName.value.trim() || 'Models';
+      const blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${rootName}.swift`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // Initial load
+    edJson.set(JSON.stringify(SAMPLES.user, null, 2));
+    optRootName.value = 'UserResponse';
+    runConversion();
+  </script>
+</body>
+</html>

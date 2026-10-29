@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'">
+<title>JSON Beautify</title>
+<style>
+:root {
+  --bg: #F6F7F5;
+  --surface: #FFFFFF;
+  --surface-2: #EEF0ED;
+  --ink: #1B1F1D;
+  --muted: #5E6861;
+  --line: #DFE3DF;
+  --accent: #0F6E66;
+  --accent-ink: #FFFFFF;
+  --verified: #1F8A3D;
+  --warn: #9A5B00;
+  --danger: #B3321F;
+  box-sizing: border-box;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121413;
+    --surface: #1A1D1B;
+    --surface-2: #222623;
+    --ink: #E6E9E6;
+    --muted: #8B948D;
+    --line: #2A2F2C;
+    --accent: #4FB8AD;
+    --accent-ink: #0B1412;
+    --verified: #4CC46F;
+    --warn: #E0A030;
+    --danger: #F0716A;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #121413;
+  --surface: #1A1D1B;
+  --surface-2: #222623;
+  --ink: #E6E9E6;
+  --muted: #8B948D;
+  --line: #2A2F2C;
+  --accent: #4FB8AD;
+  --accent-ink: #0B1412;
+  --verified: #4CC46F;
+  --warn: #E0A030;
+  --danger: #F0716A;
+}
+
+:root[data-theme="light"] {
+  --bg: #F6F7F5;
+  --surface: #FFFFFF;
+  --surface-2: #EEF0ED;
+  --ink: #1B1F1D;
+  --muted: #5E6861;
+  --line: #DFE3DF;
+  --accent: #0F6E66;
+  --accent-ink: #FFFFFF;
+  --verified: #1F8A3D;
+  --warn: #9A5B00;
+  --danger: #B3321F;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(140, 150, 145, 0.4) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(140, 150, 145, 0.35);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(140, 150, 145, 0.65);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+:root[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+:root[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.38);
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font: 14px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
+}
+
+.mono, textarea {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 13px;
+}
+
+main {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 14px 20px 32px;
+}
+
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.opts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.opts label {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.opts input[type="checkbox"] {
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.opts select {
+  font: inherit;
+  font-size: 13px;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 2px 8px;
+  outline: none;
+}
+
+.opts select:focus-visible {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent);
+}
+
+button {
+  font: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 4px 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 120ms ease-out, border-color 120ms ease-out;
+}
+
+button:hover {
+  background: var(--surface-2);
+  border-color: var(--line);
+}
+
+button.primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+  font-weight: 500;
+}
+
+button.primary:hover {
+  opacity: 0.92;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
+  align-items: stretch;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+}
+
+.bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
+.actions button {
+  padding: 2px 8px;
+  font-size: 12px;
+}
+
+.editor-wrap {
+  display: flex;
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  height: clamp(280px, 62vh, 760px);
+  min-height: 200px;
+  resize: vertical;
+}
+
+.editor-wrap:focus-within {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.gutter {
+  user-select: none;
+  background: var(--surface-2);
+  border-right: 1px solid var(--line);
+  color: var(--muted);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11.5px;
+  line-height: 20px;
+  padding: 8px 0 24px 0;
+  width: 48px;
+  min-width: 48px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.gutter-line {
+  height: 20px;
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 6px;
+  font-size: 11px;
+}
+
+.fold-btn {
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 3px;
+  cursor: pointer;
+  border-radius: 2px;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1;
+}
+
+.fold-btn:hover {
+  background: var(--line);
+  color: var(--ink);
+}
+
+.fold-btn.empty {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.line-num {
+  min-width: 20px;
+  text-align: right;
+  color: var(--muted);
+}
+
+.editor-wrap textarea {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 20px;
+  padding: 8px 10px 24px 10px;
+  white-space: pre;
+  overflow: auto;
+  resize: none;
+  outline: none;
+  tab-size: 2;
+}
+
+.status-bar {
+  margin-top: 10px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 22px;
+}
+
+.status-bar.valid {
+  color: var(--verified);
+  font-weight: 500;
+}
+
+.status-bar.err {
+  color: var(--danger);
+}
+
+@media(max-width: 860px) {
+  main { padding: 12px 14px 24px; }
+  .panels { grid-template-columns: 1fr; }
+  .editor-wrap { height: clamp(220px, 42vh, 480px); }
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="opts">
+    <button class="primary" id="btn-format">Beautify</button>
+    <button id="btn-minify">Minify</button>
+    <label>Indent
+      <select id="sel-indent">
+        <option value="2" selected>2 spaces</option>
+        <option value="4">4 spaces</option>
+        <option value="tab">1 tab</option>
+      </select>
+    </label>
+    <label><input type="checkbox" id="chk-sort"> Sort keys</label>
+  </div>
+</header>
+
+<div class="panels">
+  <div class="panel">
+    <div class="bar">
+      <span>Input JSON</span>
+      <div class="actions">
+        <button id="btn-sample">Sample</button>
+        <button id="btn-clear">Clear</button>
+      </div>
+    </div>
+    <div class="editor-wrap" id="wrap-in">
+      <div class="gutter"></div>
+      <textarea id="txt-in" spellcheck="false" placeholder="Paste or type raw JSON here..."></textarea>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="bar">
+      <span>Formatted Output</span>
+      <div class="actions">
+        <button id="btn-copy">Copy</button>
+      </div>
+    </div>
+    <div class="editor-wrap" id="wrap-out">
+      <div class="gutter"></div>
+      <textarea id="txt-out" readonly spellcheck="false" placeholder="Formatted JSON will appear here..."></textarea>
+    </div>
+  </div>
+</div>
+
+<div id="status" class="status-bar" role="status"></div>
+</main>
+
+<script>
+(function() {
+  var $ = function(id) { return document.getElementById(id); };
+  var txtIn = $('txt-in');
+  var txtOut = $('txt-out');
+  var status = $('status');
+  var selIndent = $('sel-indent');
+  var chkSort = $('chk-sort');
+  var btnFormat = $('btn-format');
+  var btnMinify = $('btn-minify');
+  var btnClear = $('btn-clear');
+  var btnSample = $('btn-sample');
+  var btnCopy = $('btn-copy');
+
+  // Theme synchronization with host toolkit
+  if (window.toolkit && window.toolkit.theme) {
+    if (window.toolkit.theme.isDark) {
+      window.toolkit.theme.isDark().then(function(isDark) {
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+      });
+    }
+    if (window.toolkit.theme.onThemeChanged) {
+      window.toolkit.theme.onThemeChanged(function(isDark) {
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+      });
+    }
+  }
+
+  function createEditor(wrapEl, textareaEl, onChange) {
+    var gutter = wrapEl.querySelector('.gutter');
+    var fullText = textareaEl.value;
+    var activeFolds = {};
+
+    function findBracketFolds(text) {
+      var lines = text.split('\n');
+      var stack = [];
+      var folds = {};
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i];
+        for (var col = 0; col < line.length; col++) {
+          var ch = line[col];
+          if (ch === '"' || ch === "'") {
+            var q = ch;
+            col++;
+            while (col < line.length && line[col] !== q) {
+              if (line[col] === '\\') col++;
+              col++;
+            }
+            continue;
+          }
+          if (ch === '{' || ch === '[') {
+            stack.push({ ch: ch, line: i });
+          } else if (ch === '}' || ch === ']') {
+            if (stack.length > 0) {
+              var top = stack[stack.length - 1];
+              if ((ch === '}' && top.ch === '{') || (ch === ']' && top.ch === '[')) {
+                stack.pop();
+                if (i > top.line) {
+                  folds[top.line] = i;
+                }
+              }
+            }
+          }
+        }
+      }
+      return folds;
+    }
+
+    function renderGutterAndText(updateText) {
+      var allLines = fullText.length === 0 ? [''] : fullText.split('\n');
+      var folds = findBracketFolds(fullText);
+      var lineIdx = 0;
+      var displayedLines = [];
+      var gutterHtml = '';
+
+      while (lineIdx < allLines.length) {
+        var lineNum = lineIdx + 1;
+        var canFold = folds.hasOwnProperty(lineIdx);
+        var isFolded = activeFolds.hasOwnProperty(lineIdx);
+
+        if (isFolded) {
+          var endIdx = activeFolds[lineIdx];
+          var endLine = allLines[endIdx] || '';
+          var closeChar = endLine.trim().charAt(0) || (allLines[lineIdx].indexOf('[') !== -1 ? ']' : '}');
+          var comma = endLine.trim().endsWith(',') ? ',' : '';
+          displayedLines.push(allLines[lineIdx] + ' ... ' + closeChar + comma);
+          gutterHtml += '<div class="gutter-line"><span class="fold-btn" data-fold="' + lineIdx + '">&#9658;</span><span class="line-num">' + lineNum + '</span></div>';
+          lineIdx = endIdx + 1;
+        } else {
+          displayedLines.push(allLines[lineIdx]);
+          var foldBtn = canFold
+            ? '<span class="fold-btn" data-fold="' + lineIdx + '">&#9660;</span>'
+            : '<span class="fold-btn empty"></span>';
+          gutterHtml += '<div class="gutter-line">' + foldBtn + '<span class="line-num">' + lineNum + '</span></div>';
+          lineIdx++;
+        }
+      }
+
+      if (updateText) {
+        textareaEl.value = displayedLines.join('\n');
+      }
+      gutter.innerHTML = gutterHtml;
+      gutter.scrollTop = textareaEl.scrollTop;
+    }
+
+    gutter.addEventListener('click', function(e) {
+      var btn = e.target.closest('.fold-btn');
+      if (!btn || btn.dataset.fold === undefined) return;
+      var lineIdx = parseInt(btn.dataset.fold, 10);
+      var folds = findBracketFolds(fullText);
+      if (activeFolds.hasOwnProperty(lineIdx)) {
+        delete activeFolds[lineIdx];
+      } else if (folds.hasOwnProperty(lineIdx)) {
+        activeFolds[lineIdx] = folds[lineIdx];
+      }
+      renderGutterAndText(true);
+    });
+
+    textareaEl.addEventListener('scroll', function() {
+      gutter.scrollTop = textareaEl.scrollTop;
+    });
+
+    textareaEl.addEventListener('input', function() {
+      activeFolds = {};
+      fullText = textareaEl.value;
+      renderGutterAndText(false);
+      if (onChange) onChange();
+    });
+
+    function set(val) {
+      fullText = val == null ? '' : String(val);
+      activeFolds = {};
+      renderGutterAndText(true);
+    }
+
+    function get() {
+      return fullText;
+    }
+
+    renderGutterAndText(true);
+
+    return {
+      set: set,
+      get: get,
+      sync: function() { renderGutterAndText(true); }
+    };
+  }
+
+  function syncEditorHeights(wrap1, wrap2) {
+    var syncing = false;
+    var ro = new ResizeObserver(function(entries) {
+      if (syncing) return;
+      for (var i = 0; i < entries.length; i++) {
+        var entry = entries[i];
+        var target = entry.target;
+        var other = target === wrap1 ? wrap2 : wrap1;
+        var h = target.style.height;
+        if (h && other.style.height !== h) {
+          syncing = true;
+          other.style.height = h;
+          syncing = false;
+          break;
+        }
+      }
+    });
+    ro.observe(wrap1);
+    ro.observe(wrap2);
+  }
+
+  var edIn = createEditor($('wrap-in'), txtIn, scheduleProcess);
+  var edOut = createEditor($('wrap-out'), txtOut);
+  syncEditorHeights($('wrap-in'), $('wrap-out'));
+
+  function sortKeys(obj) {
+    if (Array.isArray(obj)) return obj.map(sortKeys);
+    if (obj !== null && typeof obj === 'object') {
+      var sorted = {};
+      Object.keys(obj).sort().forEach(function(k) {
+        sorted[k] = sortKeys(obj[k]);
+      });
+      return sorted;
+    }
+    return obj;
+  }
+
+  function getIndent() {
+    var v = selIndent.value;
+    if (v === 'tab') return '\t';
+    return parseInt(v, 10) || 2;
+  }
+
+  function process(minify) {
+    var raw = edIn.get().trim();
+    if (!raw) {
+      edOut.set('');
+      status.className = 'status-bar';
+      status.textContent = '';
+      return;
+    }
+
+    try {
+      var parsed = JSON.parse(raw);
+      if (chkSort.checked) {
+        parsed = sortKeys(parsed);
+      }
+      var res = minify ? JSON.stringify(parsed) : JSON.stringify(parsed, null, getIndent());
+      edOut.set(res);
+      status.className = 'status-bar valid';
+      var lines = res.split('\n').length;
+      status.textContent = 'Valid JSON • ' + res.length.toLocaleString() + ' chars • ' + lines + (lines === 1 ? ' line' : ' lines');
+    } catch (err) {
+      edOut.set('');
+      status.className = 'status-bar err';
+      status.textContent = 'Error: ' + err.message;
+    }
+  }
+
+  var debounceTimer;
+  function scheduleProcess() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(function() { process(false); }, 150);
+  }
+
+  selIndent.addEventListener('change', function() { process(false); });
+  chkSort.addEventListener('change', function() { process(false); });
+
+  btnFormat.addEventListener('click', function() { process(false); });
+  btnMinify.addEventListener('click', function() { process(true); });
+
+  btnClear.addEventListener('click', function() {
+    edIn.set('');
+    edOut.set('');
+    status.className = 'status-bar';
+    status.textContent = '';
+    txtIn.focus();
+  });
+
+  btnSample.addEventListener('click', function() {
+    edIn.set('{\n  "toolkit": {\n    "name": "Dev Toolkit",\n    "version": "1.0.0",\n    "active": true,\n    "features": [\n      "diff",\n      "json-beautify"\n    ],\n    "settings": {\n      "theme": "system",\n      "sandboxed": true\n    }\n  }\n}');
+    process(false);
+  });
+
+  btnCopy.addEventListener('click', function() {
+    var text = edOut.get();
+    if (!text) return;
+    var original = btnCopy.textContent;
+    var markCopied = function() {
+      btnCopy.textContent = 'Copied!';
+      setTimeout(function() { btnCopy.textContent = original; }, 1200);
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(markCopied, fallback);
+    } else {
+      fallback();
+    }
+
+    function fallback() {
+      var x = document.createElement('textarea');
+      x.value = text;
+      document.body.appendChild(x);
+      x.select();
+      try {
+        document.execCommand('copy');
+        markCopied();
+      } catch (e) {}
+      x.remove();
+    }
+  });
+
+  // Drag and drop file support
+  txtIn.addEventListener('dragover', function(e) { e.preventDefault(); });
+  txtIn.addEventListener('drop', function(e) {
+    var f = e.dataTransfer.files[0];
+    if (f) {
+      e.preventDefault();
+      var r = new FileReader();
+      r.onload = function() {
+        edIn.set(r.result);
+        process(false);
+      };
+      r.readAsText(f);
+    }
+  });
+})();
+</script>
+</body>
+</html>

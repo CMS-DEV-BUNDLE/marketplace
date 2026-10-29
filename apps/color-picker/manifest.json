@@ -1,0 +1,11 @@
+{
+  "id": "color-picker",
+  "name": "Colour Picker",
+  "version": "1.0.0",
+  "description": "Colour formats, palette shades, and WCAG contrast checker",
+  "icon": "icon.svg",
+  "entry": "index.html",
+  "permissions": [],
+  "tabs": { "allowMultiple": false, "allowDuplicates": false },
+  "window": { "minWidth": 720, "minHeight": 480 }
+}

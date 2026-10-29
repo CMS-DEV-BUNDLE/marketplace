@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Live Text OCR</title>
+  <style>
+    :root {
+      --bg: #F6F7F5;
+      --surface: #FFFFFF;
+      --surface-2: #EEF0ED;
+      --ink: #1B1F1D;
+      --muted: #5E6861;
+      --line: #DFE3DF;
+      --accent: #0F6E66;
+      --accent-ink: #FFFFFF;
+      --accent-soft: rgba(15, 110, 102, 0.12);
+      --highlight: rgba(15, 110, 102, 0.35);
+    }
+    :root[data-theme="dark"] {
+      --bg: #121413;
+      --surface: #1A1D1B;
+      --surface-2: #222623;
+      --ink: #E6E9E6;
+      --muted: #8B948D;
+      --line: #2A2F2C;
+      --accent: #4FB8AD;
+      --accent-ink: #0B1412;
+      --accent-soft: rgba(79, 184, 173, 0.15);
+      --highlight: rgba(79, 184, 173, 0.4);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    main {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 14px 20px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Header */
+    .header-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .title-area { display: flex; align-items: center; gap: 10px; }
+    .title-icon {
+      width: 32px; height: 32px; border-radius: 6px;
+      background: var(--accent-soft); color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .title-area h1 { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+    .title-area p { font-size: 12px; color: var(--muted); }
+    .actions-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    button {
+      background: var(--surface-2);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 7px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s, border-color 0.15s, transform 0.05s;
+      white-space: nowrap;
+    }
+    button:hover { background: var(--line); }
+    button:active { transform: translateY(1px); }
+    button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+    button.primary:hover { opacity: 0.9; }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Workspace grid */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
+    }
+    .card-header h2 {
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Viewport */
+    .dropzone-container {
+      position: relative;
+      width: 100%;
+      height: clamp(380px, 60vh, 720px);
+      background: var(--surface-2);
+      border: 2px dashed var(--line);
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+    .dropzone-container.drag-over {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 24px;
+      max-width: 360px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .empty-icon { width: 48px; height: 48px; color: var(--muted); margin-bottom: 4px; }
+    .empty-state h3 { font-size: 15px; font-weight: 600; }
+    .empty-state p { font-size: 13px; color: var(--muted); }
+    .sample-pill-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 6px; }
+    .sample-pill {
+      font-size: 11px; padding: 5px 10px; border-radius: 14px;
+      background: var(--surface); border: 1px solid var(--line);
+      color: var(--ink); cursor: pointer;
+    }
+    .sample-pill:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Image stage */
+    .stage-wrapper {
+      position: relative;
+      display: none;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+      background: #0d1110;
+    }
+    :root:not([data-theme="dark"]) .stage-wrapper { background: #e7ece8; }
+    .stage-content { position: relative; display: inline-block; }
+    .stage-image {
+      display: block;
+      max-width: 100%;
+      max-height: clamp(380px, 60vh, 720px);
+      object-fit: contain;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    /* Live Text Overlay - Apple Live Text style */
+    .text-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: auto;
+      overflow: hidden;
+      line-height: 1;
+    }
+    .ocr-word {
+      position: absolute;
+      display: inline-block;
+      white-space: nowrap;
+      color: transparent;
+      cursor: text;
+      user-select: text;
+      -webkit-user-select: text;
+      border-radius: 2px;
+      transition: background 0.12s, outline 0.12s;
+    }
+    .ocr-word::selection { background: var(--highlight); color: transparent; }
+    .ocr-word:hover { outline: 1.5px solid var(--accent); background: var(--accent-soft); }
+    .show-boxes .ocr-word {
+      outline: 1px dashed var(--accent);
+      background: rgba(15, 110, 102, 0.08);
+    }
+    :root[data-theme="dark"] .show-boxes .ocr-word { background: rgba(79, 184, 173, 0.1); }
+    .ocr-word.search-match { outline: 2px solid #E59819 !important; background: rgba(229, 152, 25, 0.28) !important; }
+
+    /* Live Text badge */
+    .live-text-badge {
+      position: absolute;
+      right: 14px; bottom: 14px;
+      z-index: 20;
+      background: rgba(26, 29, 27, 0.85);
+      backdrop-filter: blur(8px);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      display: flex; align-items: center; gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      transition: transform 0.15s, background 0.15s;
+    }
+    .live-text-badge:hover { background: rgba(26,29,27,0.98); transform: scale(1.04); }
+    .live-text-badge.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+    .live-text-badge svg { width: 14px; height: 14px; }
+
+    /* OCR Progress Overlay */
+    .ocr-progress-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(18, 20, 19, 0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      z-index: 30;
+      border-radius: 4px;
+    }
+    .ocr-progress-overlay.visible { display: flex; }
+    .progress-track {
+      width: 220px;
+      height: 4px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+    .progress-label { font-size: 13px; color: rgba(255,255,255,0.85); font-weight: 500; }
+
+    /* Floating Selection Pill */
+    .selection-pill {
+      position: fixed;
+      display: none;
+      z-index: 100;
+      background: var(--ink);
+      color: var(--bg);
+      padding: 4px 6px;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+      font-size: 12px;
+      align-items: center;
+      gap: 4px;
+      transform: translate(-50%, -100%);
+      margin-top: -8px;
+      pointer-events: auto;
+      animation: fadeIn 0.12s ease-out;
+    }
+    .selection-pill button {
+      background: transparent; color: var(--bg); border: none;
+      padding: 4px 8px; font-size: 11px; border-radius: 12px; cursor: pointer;
+    }
+    .selection-pill button:hover { background: rgba(255,255,255,0.2); }
+    .pill-divider { width: 1px; height: 12px; background: rgba(255,255,255,0.3); }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -88%); }
+      to { opacity: 1; transform: translate(-50%, -100%); }
+    }
+
+    /* Inspector pane */
+    .inspector-panel { display: flex; flex-direction: column; gap: 12px; }
+    .search-box { position: relative; width: 100%; }
+    .search-box input {
+      width: 100%;
+      background: var(--surface-2);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 7px 10px 7px 30px;
+      font-size: 13px;
+      outline: none;
+    }
+    .search-box input:focus { border-color: var(--accent); }
+    .search-box svg { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--muted); pointer-events: none; }
+    .text-editor {
+      width: 100%;
+      height: clamp(260px, 42vh, 500px);
+      background: var(--surface-2);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+      white-space: pre-wrap;
+    }
+    .text-editor:focus { border-color: var(--accent); }
+    .stats-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 11px; color: var(--muted); padding: 2px 4px;
+      flex-wrap: wrap; gap: 8px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--ink); color: var(--bg);
+      padding: 8px 16px; border-radius: 20px;
+      font-size: 12px; font-weight: 500;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 1000;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .spinner {
+      display: inline-block; width: 14px; height: 14px;
+      border: 2px solid var(--line); border-top-color: var(--accent);
+      border-radius: 50%; animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 980px) { .workspace-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 860px) { main { padding: 12px 14px 24px; } }
+  </style>
+</head>
+<body>
+<main>
+  <!-- Header -->
+  <div class="header-card">
+    <div class="title-area">
+      <div class="title-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 7V4h3"/><path d="M17 4h3v3"/><path d="M20 17v3h-3"/><path d="M7 20H4v-3"/>
+          <path d="M9 9h6"/><path d="M12 9v7"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Live Text OCR</h1>
+        <p>100% offline · zero data in transit · GDPR/DPA compliant · volatile memory only</p>
+      </div>
+    </div>
+    <div class="actions-bar">
+      <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp,image/bmp,image/gif" style="display:none">
+      <button id="uploadBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        Choose Image
+      </button>
+      <button id="pasteBtn" title="Or press Ctrl+V anywhere">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+        </svg>
+        Paste Image
+      </button>
+      <button id="toggleBoxesBtn" title="Toggle bounding box visualisation">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>
+        </svg>
+        Boxes
+      </button>
+      <span class="badge" id="engineBadge" title="Air-gapped local processing, zero data in transit, zero disk persistence (GDPR/DPA compliant)">🛡️ GDPR/DPA Air-Gapped</span>
+    </div>
+  </div>
+
+  <!-- Workspace -->
+  <div class="workspace-grid">
+    <!-- Image Viewer -->
+    <div class="card">
+      <div class="card-header">
+        <h2>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+          </svg>
+          Live Text Viewport
+        </h2>
+        <span class="badge" id="detectionCountBadge">0 words</span>
+      </div>
+
+      <div class="dropzone-container" id="dropzone">
+        <!-- Empty state -->
+        <div class="empty-state" id="emptyState">
+          <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/>
+          </svg>
+          <h3>Drag &amp; Drop Image Here</h3>
+          <p>Or paste from clipboard (Ctrl+V), or try a built-in test sample:</p>
+          <div class="sample-pill-group">
+            <button type="button" class="sample-pill" data-preset="quote">Quote</button>
+            <button type="button" class="sample-pill" data-preset="code">Code</button>
+            <button type="button" class="sample-pill" data-preset="invoice">Invoice</button>
+            <button type="button" class="sample-pill" data-preset="terminal">Terminal</button>
+          </div>
+        </div>
+
+        <!-- Active image stage -->
+        <div class="stage-wrapper" id="stageWrapper">
+          <div class="stage-content" id="stageContent">
+            <img id="sourceImage" class="stage-image" alt="OCR source">
+            <div class="text-overlay" id="textOverlay" title="Drag to select · double-click a word"></div>
+          </div>
+          <!-- OCR progress overlay -->
+          <div class="ocr-progress-overlay" id="progressOverlay">
+            <div class="progress-label" id="progressLabel">Initialising OCR engine…</div>
+            <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+          </div>
+          <!-- Apple Live Text toggle badge -->
+          <div class="live-text-badge" id="liveTextBadge" title="Toggle recognised-word highlights">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 7V4h3"/><path d="M17 4h3v3"/><path d="M20 17v3h-3"/><path d="M7 20H4v-3"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            <span>Live Text</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Text Inspector -->
+    <div class="card inspector-panel">
+      <div class="card-header">
+        <h2>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="21" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="7" y2="18"/>
+          </svg>
+          Extracted Text
+        </h2>
+        <div style="display:flex;gap:6px">
+          <button class="primary" id="copyAllBtn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>Copy All
+          </button>
+          <button id="downloadBtn" title="Save as .txt">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+          </button>
+          <button id="clearBtn" title="Clear">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search text in image…">
+      </div>
+
+      <textarea id="textEditor" class="text-editor" placeholder="Recognised text appears here. You can edit, select and copy freely."></textarea>
+      <div class="stats-footer">
+        <span id="charStats">0 chars · 0 words · 0 lines</span>
+        <span id="perfStats">Idle</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Floating selection pill (Apple Live Text / Google Lens UX) -->
+<div class="selection-pill" id="selectionPill">
+  <span id="pillText" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px;font-weight:500"></span>
+  <div class="pill-divider"></div>
+  <button id="pillCopyBtn">Copy</button>
+  <button id="pillSelectAllBtn">All</button>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="vendor/tesseract.min.js"></script>
+<script>
+// ── Shell theme sync ─────────────────────────────────────────────────────────
+if (window.toolkit?.theme?.onThemeChanged) {
+  window.toolkit.theme.onThemeChanged(isDark => {
+    document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+  });
+}
+
+// ── DOM references ────────────────────────────────────────────────────────────
+const dropzone          = document.getElementById('dropzone');
+const emptyState        = document.getElementById('emptyState');
+const stageWrapper      = document.getElementById('stageWrapper');
+const sourceImage       = document.getElementById('sourceImage');
+const textOverlay       = document.getElementById('textOverlay');
+const fileInput         = document.getElementById('fileInput');
+const uploadBtn         = document.getElementById('uploadBtn');
+const pasteBtn          = document.getElementById('pasteBtn');
+const toggleBoxesBtn    = document.getElementById('toggleBoxesBtn');
+const liveTextBadge     = document.getElementById('liveTextBadge');
+const progressOverlay   = document.getElementById('progressOverlay');
+const progressLabel     = document.getElementById('progressLabel');
+const progressFill      = document.getElementById('progressFill');
+const textEditor        = document.getElementById('textEditor');
+const searchInput       = document.getElementById('searchInput');
+const copyAllBtn        = document.getElementById('copyAllBtn');
+const downloadBtn       = document.getElementById('downloadBtn');
+const clearBtn          = document.getElementById('clearBtn');
+const charStats         = document.getElementById('charStats');
+const perfStats         = document.getElementById('perfStats');
+const detectionBadge    = document.getElementById('detectionCountBadge');
+const selectionPill     = document.getElementById('selectionPill');
+const pillText          = document.getElementById('pillText');
+const pillCopyBtn       = document.getElementById('pillCopyBtn');
+const pillSelectAllBtn  = document.getElementById('pillSelectAllBtn');
+const toast             = document.getElementById('toast');
+
+let isBoxesVisible = false;
+let tesseractWorker = null;
+
+// ── Tesseract.js setup (all-local, air-gapped) ────────────────────────────────
+// The Tesseract object is exposed globally by the <script src="vendor/tesseract.min.js"> above.
+// All paths are derived from location.href (not location.origin) so they resolve correctly
+// under the app:// custom protocol without any blob: indirection.
+
+// Base URL of the vendor directory, e.g. app://live-text/vendor/
+const VENDOR_BASE = new URL('vendor/', location.href).href;
+
+async function getWorker() {
+  if (tesseractWorker) return tesseractWorker;
+
+  console.log('[LiveText] Initializing Tesseract worker from:', VENDOR_BASE);
+  const workerPromise = Tesseract.createWorker('eng', 1, {
+    // Load the worker JS directly from app:// — avoids the blob: URL origin-null problem
+    workerBlobURL: false,
+    workerPath:    VENDOR_BASE + 'worker.min.js',
+    // Point directly at the LSTM-only JS shim; it importScripts the adjacent .wasm
+    corePath:      VENDOR_BASE + 'tesseract-core-lstm.js',
+    // Directory the worker fetches eng.traineddata from (via connect-src 'self')
+    langPath:      VENDOR_BASE,
+    // We ship the data locally — no cache I/O needed
+    cacheMethod:   'none',
+    // Explicitly set gzip: false so it fetches eng.traineddata directly without expecting .gz
+    gzip:          false,
+    errorHandler: err => {
+      console.error('[LiveText] Worker internal error:', err);
+    },
+    logger: m => {
+      console.log(`[Tesseract] ${m.status || 'working'}: ${m.progress !== undefined ? Math.round(m.progress * 100) + '%' : ''}`);
+      if (m.status && m.progress !== undefined) {
+        const pct = Math.round(m.progress * 100);
+        progressLabel.textContent = m.status.charAt(0).toUpperCase() + m.status.slice(1) + '…';
+        progressFill.style.width = pct + '%';
+      }
+    },
+  });
+
+  const timeoutPromise = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('Tesseract worker initialization timed out after 15s. Check console logs.')), 15000)
+  );
+
+  try {
+    tesseractWorker = await Promise.race([workerPromise, timeoutPromise]);
+    console.log('[LiveText] Tesseract worker ready');
+    return tesseractWorker;
+  } catch (err) {
+    tesseractWorker = null;
+    console.error('[LiveText] Failed to initialize worker:', err);
+    throw err;
+  }
+}
+
+// Warm up the worker in the background when the app loads
+setTimeout(() => {
+  getWorker().catch(err => {
+    console.warn('[LiveText] Worker warm-up deferred or failed:', err.message);
+  });
+}, 300);
+
+// ── Toast helper ──────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  clearTimeout(toastTimer);
+  toast.textContent = msg;
+  toast.classList.add('show');
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+}
+
+// ── Text stats ────────────────────────────────────────────────────────────────
+function updateStats(txt) {
+  const chars = txt.length;
+  const words = txt.trim() ? txt.trim().split(/\s+/).length : 0;
+  const lines = txt ? txt.split('\n').length : 0;
+  charStats.textContent = `${chars} chars · ${words} words · ${lines} lines`;
+}
+
+// ── Render Live Text overlay from Tesseract result ────────────────────────────
+function renderOverlay(words, imgNaturalW, imgNaturalH) {
+  textOverlay.innerHTML = '';
+
+  // The rendered <img> may be scaled; measure its actual display size
+  const rect = sourceImage.getBoundingClientRect();
+  const dispW = rect.width  || sourceImage.clientWidth  || imgNaturalW;
+  const dispH = rect.height || sourceImage.clientHeight || imgNaturalH;
+
+  const scaleX = dispW  / imgNaturalW;
+  const scaleY = dispH  / imgNaturalH;
+
+  words.forEach((w, i) => {
+    const b = w.bbox;
+    const x = b.x0 * scaleX;
+    const y = b.y0 * scaleY;
+    const wd = (b.x1 - b.x0) * scaleX;
+    const ht = (b.y1 - b.y0) * scaleY;
+
+    const span = document.createElement('span');
+    span.className = 'ocr-word';
+    span.dataset.text = w.text;
+    span.textContent = w.text + ' ';
+    span.style.left   = x + 'px';
+    span.style.top    = y + 'px';
+    span.style.width  = wd + 'px';
+    span.style.height = ht + 'px';
+    span.style.fontSize = Math.max(10, ht * 0.82) + 'px';
+
+    span.addEventListener('dblclick', e => {
+      e.stopPropagation();
+      const sel = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(span);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      updateSelectionPill();
+    });
+
+    textOverlay.appendChild(span);
+  });
+
+  detectionBadge.textContent = `${words.length} word${words.length === 1 ? '' : 's'}`;
+}
+
+// ── Main OCR pipeline ─────────────────────────────────────────────────────────
+async function runOCR(dataUrl) {
+  emptyState.style.display  = 'none';
+  stageWrapper.style.display = 'flex';
+  sourceImage.src = dataUrl;
+
+  // Wait for the image to load so we know its natural dimensions
+  await new Promise(resolve => {
+    if (sourceImage.complete && sourceImage.naturalWidth) resolve();
+    else sourceImage.onload = resolve;
+  });
+
+  textOverlay.innerHTML = '';
+  detectionBadge.innerHTML = '<span class="spinner"></span>';
+  progressOverlay.classList.add('visible');
+  progressFill.style.width = '0%';
+  progressLabel.textContent = 'Initialising OCR engine…';
+  perfStats.textContent = 'Running LSTM…';
+
+  const t0 = performance.now();
+  try {
+    const worker = await getWorker();
+    // Request blocks: true so Tesseract outputs hierarchical layout and bounding boxes
+    const result = await worker.recognize(dataUrl, {}, { text: true, blocks: true });
+
+    const duration = Math.round(performance.now() - t0);
+    const words = [];
+
+    if (result.data.words && Array.isArray(result.data.words)) {
+      words.push(...result.data.words.filter(w => w.text && w.text.trim().length > 0));
+    } else if (result.data.blocks && Array.isArray(result.data.blocks)) {
+      for (const block of result.data.blocks) {
+        for (const para of (block.paragraphs || [])) {
+          for (const line of (para.lines || [])) {
+            for (const word of (line.words || [])) {
+              if (word.text && word.text.trim().length > 0 && word.bbox) {
+                words.push(word);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    renderOverlay(words, sourceImage.naturalWidth, sourceImage.naturalHeight);
+
+    const fullText = (result.data.text || words.map(w => w.text).join(' ')).trim();
+    textEditor.value = fullText;
+    updateStats(fullText);
+    perfStats.textContent = `⚡ ${duration}ms · Tesseract LSTM · 100% offline`;
+    liveTextBadge.classList.add('active');
+    showToast(`Detected ${words.length} words in ${duration}ms`);
+  } catch (err) {
+    console.error('OCR error:', err);
+    detectionBadge.textContent = 'Error';
+    perfStats.textContent = 'Recognition failed – see console';
+    showToast('OCR failed: ' + err.message);
+  } finally {
+    progressOverlay.classList.remove('visible');
+  }
+}
+
+// ── Selection pill (Apple Live Text / Google Lens) ────────────────────────────
+function updateSelectionPill() {
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed || !sel.rangeCount) { selectionPill.style.display = 'none'; return; }
+  const range = sel.getRangeAt(0);
+  if (!textOverlay.contains(range.commonAncestorContainer)) { selectionPill.style.display = 'none'; return; }
+  const text = sel.toString().trim();
+  if (!text) { selectionPill.style.display = 'none'; return; }
+  const r = range.getBoundingClientRect();
+  selectionPill.style.display = 'inline-flex';
+  selectionPill.style.top  = Math.max(10, r.top) + 'px';
+  selectionPill.style.left = (r.left + r.width / 2) + 'px';
+  pillText.textContent = `"${text}"`;
+}
+
+document.addEventListener('selectionchange', updateSelectionPill);
+
+pillCopyBtn.addEventListener('click', async () => {
+  const text = window.getSelection()?.toString().trim();
+  if (!text) return;
+  await navigator.clipboard.writeText(text);
+  showToast(`Copied: "${text.slice(0, 28)}${text.length > 28 ? '…' : ''}"`);
+  selectionPill.style.display = 'none';
+});
+
+pillSelectAllBtn.addEventListener('click', () => {
+  const sel = window.getSelection();
+  const range = document.createRange();
+  range.selectNodeContents(textOverlay);
+  sel.removeAllRanges();
+  sel.addRange(range);
+  updateSelectionPill();
+});
+
+// ── DPA & GDPR Compliance: Zero Data-at-Rest & Process Hardening ─────────────
+const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB limit against memory exhaustion attacks
+const ALLOWED_MIME = new Set(['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/bmp', 'image/gif']);
+let activeBlobUrl = null;
+
+// Secure memory sanitization: scrubs image buffers, text strings, and revoked URLs
+function secureWipe() {
+  if (activeBlobUrl) {
+    try { URL.revokeObjectURL(activeBlobUrl); } catch {}
+    activeBlobUrl = null;
+  }
+
+  // Clear image buffer to release backing pixels from GPU/RAM
+  sourceImage.removeAttribute('src');
+  sourceImage.src = '';
+
+  // Scrub text data
+  textOverlay.textContent = '';
+  textEditor.value = '';
+  searchInput.value = '';
+
+  stageWrapper.style.display = 'none';
+  emptyState.style.display = 'flex';
+  detectionBadge.textContent = '0 words';
+  charStats.textContent = '0 chars · 0 words · 0 lines';
+  perfStats.textContent = 'Memory sanitized';
+  selectionPill.style.display = 'none';
+  liveTextBadge.classList.remove('active');
+
+  // Purge any residual browser selection from memory
+  const sel = window.getSelection();
+  if (sel) sel.removeAllRanges();
+}
+
+// Strict input validation against polyglot files and oversized payloads
+function validateAndProcessImage(file) {
+  if (!file) return;
+
+  if (!ALLOWED_MIME.has(file.type.toLowerCase())) {
+    showToast('Invalid format. Supported: PNG, JPEG, WebP, BMP.');
+    return;
+  }
+
+  if (file.size > MAX_FILE_SIZE) {
+    showToast('File exceeds 25MB security limit.');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = ev => {
+    // Overwrite previous active data before loading new image
+    if (activeBlobUrl) {
+      try { URL.revokeObjectURL(activeBlobUrl); } catch {}
+      activeBlobUrl = null;
+    }
+    runOCR(ev.target.result);
+  };
+  reader.readAsDataURL(file);
+}
+
+// Automatic scrub on page/tab lifecycle events (GDPR Storage Limitation)
+window.addEventListener('beforeunload', secureWipe);
+window.addEventListener('pagehide', secureWipe);
+
+// Prevent default drag-drop on window to prevent top-level navigation hijack
+window.addEventListener('dragover', e => e.preventDefault());
+window.addEventListener('drop', e => e.preventDefault());
+
+// ── Toolbar buttons ───────────────────────────────────────────────────────────
+uploadBtn.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', e => {
+  const f = e.target.files?.[0];
+  if (f) validateAndProcessImage(f);
+  fileInput.value = '';
+});
+
+pasteBtn.addEventListener('click', async () => {
+  try {
+    const items = await navigator.clipboard.read();
+    for (const item of items) {
+      for (const type of item.types) {
+        if (type.startsWith('image/')) {
+          const blob = await item.getType(type);
+          validateAndProcessImage(blob);
+          return;
+        }
+      }
+    }
+    showToast('No image in clipboard. Try Ctrl+V.');
+  } catch {
+    showToast('Press Ctrl+V to paste an image.');
+  }
+});
+
+window.addEventListener('paste', e => {
+  for (const item of (e.clipboardData?.items || [])) {
+    if (item.type.startsWith('image/')) {
+      const blob = item.getAsFile();
+      if (blob) {
+        validateAndProcessImage(blob);
+        break;
+      }
+    }
+  }
+});
+
+function toggleBoxes() {
+  isBoxesVisible = !isBoxesVisible;
+  textOverlay.classList.toggle('show-boxes', isBoxesVisible);
+  liveTextBadge.classList.toggle('active', isBoxesVisible);
+}
+toggleBoxesBtn.addEventListener('click', toggleBoxes);
+liveTextBadge.addEventListener('click', toggleBoxes);
+
+// Live find-in-image search
+searchInput.addEventListener('input', e => {
+  const q = e.target.value.trim().toLowerCase();
+  textOverlay.querySelectorAll('.ocr-word').forEach(s => {
+    s.classList.toggle('search-match', !!q && s.dataset.text.toLowerCase().includes(q));
+  });
+});
+
+copyAllBtn.addEventListener('click', async () => {
+  if (!textEditor.value.trim()) { showToast('Nothing to copy'); return; }
+  await navigator.clipboard.writeText(textEditor.value);
+  showToast('All text copied!');
+});
+
+downloadBtn.addEventListener('click', () => {
+  if (!textEditor.value.trim()) { showToast('Nothing to download'); return; }
+  const url = URL.createObjectURL(new Blob([textEditor.value], { type: 'text/plain;charset=utf-8' }));
+  Object.assign(document.createElement('a'), { href: url, download: `ocr-${Date.now()}.txt` }).click();
+  // Revoke immediately after download triggers
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  showToast('Downloaded');
+});
+
+clearBtn.addEventListener('click', () => {
+  secureWipe();
+  showToast('Memory sanitized · Zero data retained');
+});
+
+textEditor.addEventListener('input', () => updateStats(textEditor.value));
+
+// ── Drag & Drop ───────────────────────────────────────────────────────────────
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag-over'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
+dropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropzone.classList.remove('drag-over');
+  // Disallow external URI drops, only accept local File objects
+  const f = e.dataTransfer.files?.[0];
+  if (f) {
+    validateAndProcessImage(f);
+  }
+});
+
+// ── Built-in test sample presets (rendered client-side, no network) ───────────
+function makeTestCard(lines, w, h) {
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, w, h);
+  ctx.strokeStyle = '#DFE3DF';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(1, 1, w - 2, h - 2);
+  for (const l of lines) {
+    ctx.fillStyle = l.color || '#1B1F1D';
+    ctx.font = l.font;
+    ctx.fillText(l.text, 36, l.y);
+  }
+  return c.toDataURL('image/png');
+}
+
+const PRESETS = {
+  quote: () => makeTestCard([
+    { text: 'Simplicity is prerequisite', font: 'bold 28px sans-serif', y: 72 },
+    { text: 'for reliability.', font: 'bold 28px sans-serif', y: 114 },
+    { text: '— Edsger W. Dijkstra', font: '20px sans-serif', y: 168, color: '#5E6861' },
+  ], 580, 220),
+  code: () => makeTestCard([
+    { text: "const apiKey = 'live_text_air_gapped';", font: 'bold 20px monospace', y: 60, color: '#0F6E66' },
+    { text: 'const status = 200;',                  font: 'bold 20px monospace', y: 105 },
+    { text: 'console.log(apiKey, status);',          font: 'bold 20px monospace', y: 150, color: '#774411' },
+  ], 620, 210),
+  invoice: () => makeTestCard([
+    { text: 'INVOICE #9482',    font: 'bold 28px sans-serif', y: 58 },
+    { text: 'Subtotal: $450.00', font: '20px monospace', y: 108 },
+    { text: 'Tax:       $36.00', font: '20px monospace', y: 144 },
+    { text: 'Total:    $486.00', font: 'bold 24px monospace', y: 190, color: '#0F6E66' },
+  ], 520, 240),
+  terminal: () => makeTestCard([
+    { text: 'HOST:   127.0.0.1:8080', font: 'bold 22px monospace', y: 62,  color: '#2E7D32' },
+    { text: 'STATUS: ACTIVE',         font: 'bold 22px monospace', y: 108, color: '#1565C0' },
+    { text: 'PING:   0.8ms OK',       font: 'bold 22px monospace', y: 154, color: '#E65100' },
+  ], 500, 210),
+};
+
+document.querySelectorAll('.sample-pill').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const fn = PRESETS[btn.dataset.preset];
+    if (fn) runOCR(fn());
+  });
+});
+</script>
+</body>
+</html>

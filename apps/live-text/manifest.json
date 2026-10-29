@@ -1,0 +1,19 @@
+{
+  "id": "live-text",
+  "name": "Live Text OCR",
+  "version": "1.0.0",
+  "description": "Extract, visually select, and copy text directly from images",
+  "icon": "icon.svg",
+  "entry": "index.html",
+  "permissions": [
+    "clipboard"
+  ],
+  "tabs": {
+    "allowMultiple": true,
+    "allowDuplicates": true
+  },
+  "window": {
+    "minWidth": 720,
+    "minHeight": 480
+  }
+}

@@ -1,0 +1,58 @@
+name: Publish Marketplace Assets & Catalog
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'apps/**'
+      - 'marketplace.json'
+      - 'scripts/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  publish-marketplace:
+    name: Package Mini-Apps & Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate mini-apps & schema
+        run: node scripts/validate-pr.mjs
+
+      - name: Package all mini-apps into release archives & icons
+        run: node scripts/package-apps.mjs
+
+      - name: Deploy to GitHub Pages (gh-pages branch)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          force_orphan: true
+
+      - name: Publish GitHub Release with App Archives
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/master'
+        with:
+          tag_name: v1.0.0
+          name: 'Mini-Apps Release v1.0.0'
+          draft: false
+          prerelease: false
+          files: |
+            dist/apps/*.zip
+            dist/marketplace.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

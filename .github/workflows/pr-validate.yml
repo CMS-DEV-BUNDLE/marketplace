@@ -1,0 +1,29 @@
+name: PR Validation & Sanity Check
+
+on:
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Verify Mini-App Manifest & Sandbox Rules
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out PR code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run manifest & configuration validation
+        run: node scripts/validate-pr.mjs
+
+      - name: Dry-run packaging
+        run: node scripts/package-apps.mjs

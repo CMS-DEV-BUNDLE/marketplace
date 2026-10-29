@@ -1,0 +1,17 @@
+{
+  "id": "jwt-io",
+  "name": "JWT.io",
+  "version": "1.0.0",
+  "description": "Decode, verify, and generate JSON Web Tokens (JWT) offline",
+  "icon": "icon.svg",
+  "entry": "index.html",
+  "permissions": [],
+  "tabs": {
+    "allowMultiple": true,
+    "allowDuplicates": true
+  },
+  "window": {
+    "minWidth": 720,
+    "minHeight": 480
+  }
+}

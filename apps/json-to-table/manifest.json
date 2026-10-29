@@ -1,0 +1,17 @@
+{
+  "id": "json-to-table",
+  "name": "JSON to Table",
+  "version": "1.0.0",
+  "description": "Convert complex nested JSON into interactive tables with tree view, live editing, and export",
+  "icon": "icon.svg",
+  "entry": "index.html",
+  "permissions": [],
+  "tabs": {
+    "allowMultiple": true,
+    "allowDuplicates": true
+  },
+  "window": {
+    "minWidth": 720,
+    "minHeight": 480
+  }
+}
