@@ -1,0 +1,185 @@
+{
+  "schemaVersion": "1.0.0",
+  "updatedAt": "2026-10-29T09:45:16.208Z",
+  "appsCount": 8,
+  "apps": [
+    {
+      "id": "color-picker",
+      "name": "Colour Picker",
+      "version": "1.0.0",
+      "description": "Colour formats, palette shades, and WCAG contrast checker",
+      "category": "utilities",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/color-picker.svg",
+      "size": "9.0 KB",
+      "archive": {
+        "fileName": "color-picker-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/color-picker-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/color-picker-1.0.0.zip",
+        "sha256": "0477f162467d5529c71bbd7c2ced339f647dc62175cbebf0a1f0af5baf03c207",
+        "downloadBytes": 9215
+      },
+      "permissions": [],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"
+      }
+    },
+    {
+      "id": "diff",
+      "name": "Diff",
+      "version": "1.0.0",
+      "description": "JSON and text diff",
+      "category": "formatters",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/diff.svg",
+      "size": "9.3 KB",
+      "archive": {
+        "fileName": "diff-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/diff-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/diff-1.0.0.zip",
+        "sha256": "5ed9cb2cbc305621995ea6e534fbea4b4551aa764680c2b05a12b379e0de5237",
+        "downloadBytes": 9558
+      },
+      "permissions": [],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"
+      }
+    },
+    {
+      "id": "json-beautify",
+      "name": "JSON Beautify",
+      "version": "1.0.0",
+      "description": "Beautify, format, and minify JSON",
+      "category": "formatters",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/json-beautify.svg",
+      "size": "5.7 KB",
+      "archive": {
+        "fileName": "json-beautify-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/json-beautify-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/json-beautify-1.0.0.zip",
+        "sha256": "1d03be8ddcc5bc4f3da8416b56fe42134e7eaa3fd6d3bdd8e8301167e56e06a6",
+        "downloadBytes": 5794
+      },
+      "permissions": [],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"
+      }
+    },
+    {
+      "id": "json-to-table",
+      "name": "JSON to Table",
+      "version": "1.0.0",
+      "description": "Convert complex nested JSON into interactive tables with tree view, live editing, and export",
+      "category": "converters",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/json-to-table.svg",
+      "size": "15.8 KB",
+      "archive": {
+        "fileName": "json-to-table-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/json-to-table-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/json-to-table-1.0.0.zip",
+        "sha256": "fb9f1841dd8b346c3fb32d08c7a87e067e5f8556ee9dad107050be069d2f4124",
+        "downloadBytes": 16176
+      },
+      "permissions": [],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"
+      }
+    },
+    {
+      "id": "json4swift",
+      "name": "Json4Swift",
+      "version": "1.0.0",
+      "description": "Convert JSON into Swift Codable models",
+      "category": "converters",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/json4swift.svg",
+      "size": "9.6 KB",
+      "archive": {
+        "fileName": "json4swift-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/json4swift-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/json4swift-1.0.0.zip",
+        "sha256": "91a22251ea298950717d3312cf3854ed3e89df8b2ad039c8192c07b859ae6f68",
+        "downloadBytes": 9852
+      },
+      "permissions": [],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"
+      }
+    },
+    {
+      "id": "jwt-io",
+      "name": "JWT.io",
+      "version": "1.0.0",
+      "description": "Decode, verify, and generate JSON Web Tokens (JWT) offline",
+      "category": "security",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/jwt-io.svg",
+      "size": "7.8 KB",
+      "archive": {
+        "fileName": "jwt-io-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/jwt-io-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/jwt-io-1.0.0.zip",
+        "sha256": "4932604f0acd228b79400fa31caab4640643eb8b737c5199cf2f34ef26bd7f78",
+        "downloadBytes": 7985
+      },
+      "permissions": [],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"
+      }
+    },
+    {
+      "id": "live-text",
+      "name": "Live Text OCR",
+      "version": "1.0.0",
+      "description": "Extract, visually select, and copy text directly from images",
+      "category": "security",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/live-text.svg",
+      "size": "4.9 MB",
+      "archive": {
+        "fileName": "live-text-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/live-text-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/live-text-1.0.0.zip",
+        "sha256": "2a7706b9956df93d26e2ac921b46b89c081b00157f492a4611d4189fc490ed11",
+        "downloadBytes": 5095997
+      },
+      "permissions": [
+        "clipboard"
+      ],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"
+      }
+    },
+    {
+      "id": "world-clock",
+      "name": "World Clock",
+      "version": "1.0.0",
+      "description": "Visual world clock, interactive daylight timeline, and multi-timezone converter",
+      "category": "utilities",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/world-clock.svg",
+      "size": "11.8 KB",
+      "archive": {
+        "fileName": "world-clock-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/world-clock-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/world-clock-1.0.0.zip",
+        "sha256": "7841f3d17c9b6a18f267da3e0da4ec3cd22be688911617d084a37832c039c9ca",
+        "downloadBytes": 12086
+      },
+      "permissions": [],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"
+      }
+    }
+  ]
+}
