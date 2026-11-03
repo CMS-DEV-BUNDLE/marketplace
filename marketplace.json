@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-11-03T14:13:46.926Z",
+  "updatedAt": "2026-11-03T14:53:12.054Z",
   "appsCount": 9,
   "apps": [
     {
@@ -163,19 +163,25 @@
       "id": "markdown-editor",
       "name": "Markdown Editor",
       "version": "1.0.0",
-      "description": "Markdown Editor",
+      "description": "A secure, privacy-first Markdown editor with live preview.",
       "category": "utilities",
       "icon": "icon.svg",
       "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/markdown-editor.svg",
-      "size": "28.7 KB",
-      "installed": false,
-      "permissions": [],
+      "size": "31.1 KB",
       "archive": {
         "fileName": "markdown-editor-1.0.0.zip",
         "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/markdown-editor-1.0.0.zip",
         "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/markdown-editor-1.0.0.zip",
-        "sha256": "a183bb1b5d032a9e12d3df20025c9f82d82a7aa8913e20dabab1d6f881296b57",
-        "downloadBytes": 29353
+        "sha256": "41705ef2d02eef775c3a2fc25fa1ea03c2e5b72c09729c0ad4334b149cc2d6e6",
+        "downloadBytes": 31852
+      },
+      "permissions": [
+        "clipboard",
+        "files"
+      ],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"
       }
     },
     {
