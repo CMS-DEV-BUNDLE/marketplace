@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Markdown Editor</title>
+  <script src="marked.js"></script>
+  <script src="purify.min.js"></script>
+  <style>
+    body {
+      display: flex;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    #editor, #preview {
+      flex: 1;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+    #editor {
+      border: none;
+      border-right: 1px solid #e0e0e0;
+      resize: none;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      outline: none;
+    }
+    #preview {
+      background-color: #f9f9f9;
+      line-height: 1.6;
+    }
+    /* Simple markdown styles */
+    #preview h1, #preview h2, #preview h3 { margin-top: 0; }
+    #preview code { background: #eee; padding: 2px 4px; border-radius: 4px; font-family: monospace; }
+    #preview pre { background: #eee; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    #preview pre code { background: none; padding: 0; }
+    #preview blockquote { border-left: 4px solid #ccc; margin: 0; padding-left: 10px; color: #666; }
+  </style>
+</head>
+<body>
+  <textarea id="editor" placeholder="Type Markdown here..."></textarea>
+  <div id="preview"></div>
+  <script src="script.js"></script>
+</body>
+</html>

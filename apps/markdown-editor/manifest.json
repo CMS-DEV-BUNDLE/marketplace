@@ -1,0 +1,9 @@
+{
+  "id": "markdown-editor",
+  "name": "Markdown Editor",
+  "version": "1.0.0",
+  "description": "A secure, privacy-first Markdown editor with live preview.",
+  "icon": "icon.svg",
+  "main": "index.html",
+  "permissions": ["clipboard", "files"]
+}
