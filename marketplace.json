@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-11-04T05:31:50.565Z",
+  "updatedAt": "2026-11-04T06:15:59.034Z",
   "appsCount": 9,
   "apps": [
     {
@@ -167,13 +167,13 @@
       "category": "utilities",
       "icon": "icon.svg",
       "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/markdown-editor.svg",
-      "size": "31.1 KB",
+      "size": "31.2 KB",
       "archive": {
         "fileName": "markdown-editor-1.0.0.zip",
         "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/markdown-editor-1.0.0.zip",
         "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/markdown-editor-1.0.0.zip",
-        "sha256": "3fd87df1631343f247dc156bb89ac5adfa7cc1e0c3a417f572d24ca7d66f3e76",
-        "downloadBytes": 31852
+        "sha256": "4b93959b0186c43e9d0d89954fc175eac9240af9f7f24350c61c630e49a22edb",
+        "downloadBytes": 31925
       },
       "permissions": [
         "clipboard",
