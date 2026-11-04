@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-11-03T14:53:12.054Z",
+  "updatedAt": "2026-11-04T05:31:50.565Z",
   "appsCount": 9,
   "apps": [
     {
@@ -172,7 +172,7 @@
         "fileName": "markdown-editor-1.0.0.zip",
         "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/markdown-editor-1.0.0.zip",
         "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/markdown-editor-1.0.0.zip",
-        "sha256": "41705ef2d02eef775c3a2fc25fa1ea03c2e5b72c09729c0ad4334b149cc2d6e6",
+        "sha256": "3fd87df1631343f247dc156bb89ac5adfa7cc1e0c3a417f572d24ca7d66f3e76",
         "downloadBytes": 31852
       },
       "permissions": [
