@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-11-16T13:00:05.153Z",
+  "updatedAt": "2026-11-16T13:10:21.999Z",
   "appsCount": 9,
   "apps": [
     {
@@ -194,7 +194,7 @@
         "fileName": "cron-helper-1.0.0.zip",
         "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/cron-helper-1.0.0.zip",
         "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/cron-helper-1.0.0.zip",
-        "sha256": "2b8316aba71a84ece6cf22fec323cd71b05c1122de74bd0675715aeac71c5d83",
+        "sha256": "9fea0ce7a324c8d5b67484e4573e2bf7e461e1188f6ca7b5ad3c590e41e69955",
         "downloadBytes": 11300
       },
       "permissions": [
@@ -202,7 +202,7 @@
       ],
       "author": {
         "name": "Dev-Toolkit Core",
-        "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
       }
     }
   ]
