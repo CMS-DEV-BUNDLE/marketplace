@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-10-29T09:43:44.633Z",
-  "appsCount": 8,
+  "updatedAt": "2026-11-16T13:00:05.153Z",
+  "appsCount": 9,
   "apps": [
     {
       "id": "color-picker",
@@ -176,6 +176,30 @@
         "downloadBytes": 12086
       },
       "permissions": [],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"
+      }
+    },
+    {
+      "id": "cron-helper",
+      "name": "Cron Helper",
+      "version": "1.0.0",
+      "description": "Understand, convert, and build cron expressions with human-readable explanations and schedule previews",
+      "category": "utilities",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/cron-helper.svg",
+      "size": "11.0 KB",
+      "archive": {
+        "fileName": "cron-helper-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/cron-helper-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/cron-helper-1.0.0.zip",
+        "sha256": "2b8316aba71a84ece6cf22fec323cd71b05c1122de74bd0675715aeac71c5d83",
+        "downloadBytes": 11300
+      },
+      "permissions": [
+        "clipboard"
+      ],
       "author": {
         "name": "Dev-Toolkit Core",
         "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"

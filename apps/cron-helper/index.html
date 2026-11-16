@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'">
+  <title>Cron Helper</title>
+  <style>
+    :root {
+      --bg: #F6F7F5;
+      --surface: #FFFFFF;
+      --surface-2: #EEF0ED;
+      --ink: #1B1F1D;
+      --muted: #5E6861;
+      --line: #DFE3DF;
+      --accent: #0F6E66;
+      --accent-ink: #FFFFFF;
+      --verified: #1F8A3D;
+      --warn: #9A5B00;
+      --danger: #B3321F;
+      --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #121413;
+        --surface: #1A1D1B;
+        --surface-2: #222623;
+        --ink: #E6E9E6;
+        --muted: #8B948D;
+        --line: #2A2F2C;
+        --accent: #4FB8AD;
+        --accent-ink: #0B1412;
+        --verified: #4CC46F;
+        --warn: #E0A030;
+        --danger: #F0716A;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #121413;
+      --surface: #1A1D1B;
+      --surface-2: #222623;
+      --ink: #E6E9E6;
+      --muted: #8B948D;
+      --line: #2A2F2C;
+      --accent: #4FB8AD;
+      --accent-ink: #0B1412;
+      --verified: #4CC46F;
+      --warn: #E0A030;
+      --danger: #F0716A;
+    }
+
+    :root[data-theme="light"] {
+      --bg: #F6F7F5;
+      --surface: #FFFFFF;
+      --surface-2: #EEF0ED;
+      --ink: #1B1F1D;
+      --muted: #5E6861;
+      --line: #DFE3DF;
+      --accent: #0F6E66;
+      --accent-ink: #FFFFFF;
+      --verified: #1F8A3D;
+      --warn: #9A5B00;
+      --danger: #B3321F;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    main {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 16px 20px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--accent);
+    }
+
+    .brand h1 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .tagline {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .tab-bar {
+      display: flex;
+      background: var(--surface-2);
+      padding: 3px;
+      border-radius: 8px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--ink);
+    }
+
+    .tab-btn.active {
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .cron-input-wrapper {
+      position: relative;
+      flex: 1;
+    }
+
+    .cron-input {
+      width: 100%;
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      padding: 10px 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .cron-input:focus {
+      border-color: var(--accent);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: var(--surface-2);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      background: var(--line);
+    }
+
+    .btn-accent {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: var(--accent);
+    }
+
+    .btn-accent:hover {
+      opacity: 0.9;
+    }
+
+    .presets-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .preset-pill {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      background: var(--surface-2);
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 3px 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .preset-pill:hover {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: var(--accent);
+    }
+
+    .explanation-banner {
+      background: var(--surface-2);
+      border-left: 4px solid var(--accent);
+      padding: 14px 16px;
+      border-radius: 0 6px 6px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .explanation-banner.invalid {
+      border-left-color: var(--danger);
+    }
+
+    .human-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .error-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--danger);
+    }
+
+    /* 5-Field Anatomy Breakdown Grid */
+    .fields-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 980px) {
+      .fields-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .fields-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .field-card {
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .field-value {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .field-desc {
+      font-size: 12px;
+      color: var(--ink);
+      margin-top: 4px;
+      min-height: 32px;
+    }
+
+    .field-range {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* Next runs list */
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 860px) {
+      .schedule-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .runs-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .run-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--surface-2);
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .run-num {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      width: 24px;
+    }
+
+    .run-time {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .run-rel {
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* Builder Controls */
+    .builder-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .radio-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .pill-radio label {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s;
+    }
+
+    .pill-radio input[type="radio"],
+    .pill-radio input[type="checkbox"] {
+      display: none;
+    }
+
+    .pill-radio input:checked + label {
+      background: var(--accent);
+      color: var(--accent-ink);
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .builder-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    select, input[type="time"], input[type="number"] {
+      padding: 6px 10px;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--ink);
+      font-size: 14px;
+      outline: none;
+    }
+
+    select:focus, input:focus {
+      border-color: var(--accent);
+    }
+
+    .output-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 12px 16px;
+    }
+
+    .output-cron {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+    }
+
+    /* Reference Table */
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+    }
+
+    th {
+      font-weight: 600;
+      color: var(--muted);
+      background: var(--surface-2);
+    }
+
+    code {
+      font-family: var(--font-mono);
+      background: var(--surface-2);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--accent);
+      font-size: 12px;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .copied-toast {
+      color: var(--verified);
+      font-size: 12px;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .copied-toast.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <div>
+          <h1>Cron Helper</h1>
+          <div class="tagline">Backend Cron translator, visual inspector &amp; schedule builder</div>
+        </div>
+      </div>
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="tab-parser">Parser &amp; Explainer</button>
+        <button class="tab-btn" data-tab="tab-builder">Schedule Builder</button>
+        <button class="tab-btn" data-tab="tab-reference">Syntax Guide</button>
+      </div>
+    </header>
+
+    <!-- TAB 1: PARSER & EXPLAINER (Cron -> High Level) -->
+    <div id="tab-parser" class="tab-content active">
+      <div class="card">
+        <div class="card-title">
+          <span>Cron Expression (5-Part Standard)</span>
+          <span id="copyParserToast" class="copied-toast">Copied to clipboard!</span>
+        </div>
+        <div class="input-row">
+          <div class="cron-input-wrapper">
+            <input type="text" id="cronInput" class="cron-input" value="*/15 9-17 * * 1-5" placeholder="* * * * *" spellcheck="false" autocomplete="off">
+          </div>
+          <button class="btn btn-accent" id="copyExprBtn" title="Copy expression">Copy</button>
+        </div>
+
+        <div class="presets-bar">
+          <span style="font-size: 12px; color: var(--muted); align-self: center; margin-right: 4px;">Presets:</span>
+          <button class="preset-pill" data-expr="* * * * *">Every minute</button>
+          <button class="preset-pill" data-expr="*/5 * * * *">Every 5 min</button>
+          <button class="preset-pill" data-expr="*/15 9-17 * * 1-5">Work hours (15m)</button>
+          <button class="preset-pill" data-expr="0 * * * *">Hourly</button>
+          <button class="preset-pill" data-expr="0 0 * * *">Midnight</button>
+          <button class="preset-pill" data-expr="0 9 * * 1-5">Weekdays 9 AM</button>
+          <button class="preset-pill" data-expr="0 0 * * 0">Weekly (Sun)</button>
+          <button class="preset-pill" data-expr="0 0 1 * *">1st of Month</button>
+          <button class="preset-pill" data-expr="0 0 1 1 *">Annually</button>
+        </div>
+      </div>
+
+      <!-- High-Level Translation Banner -->
+      <div id="explanationBanner" class="explanation-banner">
+        <div>
+          <div style="font-size: 11px; text-transform: uppercase; font-weight: 600; color: var(--muted); margin-bottom: 2px;">Human Readable Meaning</div>
+          <div id="humanText" class="human-text">Loading explanation...</div>
+        </div>
+        <button class="btn" id="copyDescBtn" title="Copy human description">Copy Text</button>
+      </div>
+
+      <!-- Field-by-Field Anatomy Breakdown -->
+      <div class="card">
+        <div class="card-title">Field Anatomy &amp; Values</div>
+        <div class="fields-grid">
+          <div class="field-card">
+            <div class="field-label">1. Minute</div>
+            <div class="field-value" id="fMinVal">*</div>
+            <div class="field-desc" id="fMinDesc">-</div>
+            <div class="field-range">Range: 0 - 59</div>
+          </div>
+          <div class="field-card">
+            <div class="field-label">2. Hour</div>
+            <div class="field-value" id="fHourVal">*</div>
+            <div class="field-desc" id="fHourDesc">-</div>
+            <div class="field-range">Range: 0 - 23 (24h)</div>
+          </div>
+          <div class="field-card">
+            <div class="field-label">3. Day of Month</div>
+            <div class="field-value" id="fDomVal">*</div>
+            <div class="field-desc" id="fDomDesc">-</div>
+            <div class="field-range">Range: 1 - 31</div>
+          </div>
+          <div class="field-card">
+            <div class="field-label">4. Month</div>
+            <div class="field-value" id="fMonthVal">*</div>
+            <div class="field-desc" id="fMonthDesc">-</div>
+            <div class="field-range">Range: 1 - 12 (JAN-DEC)</div>
+          </div>
+          <div class="field-card">
+            <div class="field-label">5. Day of Week</div>
+            <div class="field-value" id="fDowVal">*</div>
+            <div class="field-desc" id="fDowDesc">-</div>
+            <div class="field-range">Range: 0 - 6 (SUN-SAT)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Next Scheduled Executions -->
+      <div class="card">
+        <div class="card-title">Next Scheduled Executions (Local &amp; UTC)</div>
+        <div class="schedule-grid">
+          <div>
+            <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px; font-weight: 500;">Upcoming Runs (Local Machine Time):</div>
+            <ul class="runs-list" id="localRunsList">
+              <!-- Dynamically populated -->
+            </ul>
+          </div>
+          <div>
+            <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px; font-weight: 500;">Upcoming Runs (UTC Server Time):</div>
+            <ul class="runs-list" id="utcRunsList">
+              <!-- Dynamically populated -->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: SCHEDULE BUILDER (High Level -> Cron) -->
+    <div id="tab-builder" class="tab-content">
+      <div class="card">
+        <div class="card-title">High-Level Schedule Configurator</div>
+        <div class="builder-section">
+          <!-- Frequency Selection -->
+          <div class="form-group">
+            <div class="form-label">Frequency</div>
+            <div class="radio-pills">
+              <div class="pill-radio">
+                <input type="radio" name="builderFreq" id="freqMinutes" value="minutes">
+                <label for="freqMinutes">Every N Minutes</label>
+              </div>
+              <div class="pill-radio">
+                <input type="radio" name="builderFreq" id="freqHourly" value="hourly">
+                <label for="freqHourly">Hourly</label>
+              </div>
+              <div class="pill-radio">
+                <input type="radio" name="builderFreq" id="freqDaily" value="daily" checked>
+                <label for="freqDaily">Daily</label>
+              </div>
+              <div class="pill-radio">
+                <input type="radio" name="builderFreq" id="freqWeekly" value="weekly">
+                <label for="freqWeekly">Weekly</label>
+              </div>
+              <div class="pill-radio">
+                <input type="radio" name="builderFreq" id="freqMonthly" value="monthly">
+                <label for="freqMonthly">Monthly</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Options -->
+          <div id="builderOptions" class="card" style="background: var(--surface-2); padding: 14px;">
+            <!-- Rendered dynamically -->
+          </div>
+
+          <!-- Generated Output -->
+          <div class="form-group">
+            <div class="form-label">Generated Cron Expression</div>
+            <div class="output-box">
+              <div>
+                <div class="output-cron" id="builderOutputCron">0 9 * * *</div>
+                <div style="font-size: 13px; color: var(--muted); margin-top: 4px;" id="builderHumanDesc">At 09:00 AM, every day</div>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-accent" id="builderCopyBtn">Copy Cron</button>
+                <button class="btn" id="builderInspectBtn">Load into Explainer</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: REFERENCE & GOTCHAS -->
+    <div id="tab-reference" class="tab-content">
+      <div class="card">
+        <div class="card-title">Standard 5-Field Anatomy</div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Required</th>
+                <th>Allowed Values</th>
+                <th>Allowed Special Characters</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Minute</strong></td>
+                <td>Yes</td>
+                <td><code>0-59</code></td>
+                <td><code>*</code> <code>,</code> <code>-</code> <code>/</code></td>
+              </tr>
+              <tr>
+                <td><strong>2. Hour</strong></td>
+                <td>Yes</td>
+                <td><code>0-23</code></td>
+                <td><code>*</code> <code>,</code> <code>-</code> <code>/</code></td>
+              </tr>
+              <tr>
+                <td><strong>3. Day of Month</strong></td>
+                <td>Yes</td>
+                <td><code>1-31</code></td>
+                <td><code>*</code> <code>,</code> <code>-</code> <code>/</code></td>
+              </tr>
+              <tr>
+                <td><strong>4. Month</strong></td>
+                <td>Yes</td>
+                <td><code>1-12</code> or <code>JAN-DEC</code></td>
+                <td><code>*</code> <code>,</code> <code>-</code> <code>/</code></td>
+              </tr>
+              <tr>
+                <td><strong>5. Day of Week</strong></td>
+                <td>Yes</td>
+                <td><code>0-6</code> or <code>SUN-SAT</code> (0 = Sun)</td>
+                <td><code>*</code> <code>,</code> <code>-</code> <code>/</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Special Characters Cheat Sheet</div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th>Meaning</th>
+                <th>Example</th>
+                <th>Explanation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>*</code></td>
+                <td>Any / Every value</td>
+                <td><code>* * * * *</code></td>
+                <td>Runs every minute of every hour of every day.</td>
+              </tr>
+              <tr>
+                <td><code>,</code></td>
+                <td>Value list separator</td>
+                <td><code>0 9,17 * * *</code></td>
+                <td>Runs at 09:00 and 17:00 (9 AM and 5 PM).</td>
+              </tr>
+              <tr>
+                <td><code>-</code></td>
+                <td>Range of values</td>
+                <td><code>0 9-17 * * *</code></td>
+                <td>Runs every hour from 9:00 through 17:00 inclusive.</td>
+              </tr>
+              <tr>
+                <td><code>/</code></td>
+                <td>Step values</td>
+                <td><code>*/15 * * * *</code></td>
+                <td>Runs every 15 minutes (0, 15, 30, 45).</td>
+              </tr>
+              <tr>
+                <td><code>@daily</code></td>
+                <td>Standard macro</td>
+                <td><code>0 0 * * *</code></td>
+                <td>Shortcut for midnight every day.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Backend Gotchas &amp; Best Practices</div>
+        <ul style="list-style-type: disc; margin-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--ink);">
+          <li>
+            <strong>Day-of-Month vs Day-of-Week OR logic:</strong> In standard Linux <code>crond</code>, if both Day of Month and Day of Week are explicitly specified (neither is <code>*</code>), the job runs if <em>either</em> matches (logical OR, not AND).
+          </li>
+          <li>
+            <strong>UTC vs Local Clock:</strong> Cloud infrastructure (AWS EventBridge, GCP Cloud Scheduler, Kubernetes CronJobs) evaluates cron expressions in <strong>UTC</strong> by default unless explicitly configured with a timezone flag. Always verify if your job targets local or UTC time.
+          </li>
+          <li>
+            <strong>Sunday 0 vs 7:</strong> Standard cron considers <code>0</code> as Sunday. Some cron implementations (like BSD or Vixie cron) also accept <code>7</code> as Sunday. For maximum portability, prefer <code>0</code> or <code>SUN</code>.
+          </li>
+          <li>
+            <strong>Step syntax <code>*/N</code>:</strong> <code>*/10</code> in the minute field means <em>every 10 minutes starting at 0</em> (0, 10, 20, 30, 40, 50). It does not mean "every 10 minutes from whenever the job was submitted".
+          </li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Theme synchronization with Dev-Toolkit shell
+    if (window.toolkit?.theme?.onThemeChanged) {
+      window.toolkit.theme.onThemeChanged((isDark) => {
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+      });
+    }
+
+    // --- TAB SWITCHING ---
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    function switchTab(targetId) {
+      tabBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === targetId));
+      tabContents.forEach(cnt => cnt.classList.toggle('active', cnt.id === targetId));
+    }
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    // --- PARSER ENGINE ---
+    const MONTH_NAMES = {
+      JAN: 1, FEB: 2, MAR: 3, APR: 4, MAY: 5, JUN: 6,
+      JUL: 7, AUG: 8, SEP: 9, OCT: 10, NOV: 11, DEC: 12
+    };
+
+    const MONTH_LABELS = [
+      '', 'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
+    const DOW_NAMES = {
+      SUN: 0, MON: 1, TUE: 2, WED: 3, THU: 4, FRI: 5, SAT: 6
+    };
+
+    const DOW_LABELS = [
+      'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
+    ];
+
+    const MACROS = {
+      '@YEARLY': '0 0 1 1 *',
+      '@MONTHLY': '0 0 1 * *',
+      '@WEEKLY': '0 0 * * 0',
+      '@DAILY': '0 0 * * *',
+      '@HOURLY': '0 * * * *'
+    };
+
+    function parseFieldPart(part, min, max, nameMap = {}) {
+      part = part.trim().toUpperCase();
+      if (!part) return null;
+
+      let step = 1;
+      let rangePart = part;
+      if (part.includes('/')) {
+        const [r, s] = part.split('/');
+        rangePart = r;
+        step = parseInt(s, 10);
+        if (isNaN(step) || step <= 0) return null;
+      }
+
+      let start, end;
+      if (rangePart === '*' || rangePart === '') {
+        start = min;
+        end = max;
+      } else if (rangePart.includes('-')) {
+        const [s, e] = rangePart.split('-');
+        start = nameMap[s] !== undefined ? nameMap[s] : parseInt(s, 10);
+        end = nameMap[e] !== undefined ? nameMap[e] : parseInt(e, 10);
+      } else {
+        const val = nameMap[rangePart] !== undefined ? nameMap[rangePart] : parseInt(rangePart, 10);
+        start = val;
+        end = part.includes('/') ? max : val;
+      }
+
+      if (isNaN(start) || isNaN(end) || start < min || end > max || start > end) return null;
+
+      const values = [];
+      for (let i = start; i <= end; i += step) {
+        values.push(i);
+      }
+      return values;
+    }
+
+    function parseField(raw, min, max, nameMap = {}) {
+      const parts = raw.split(',');
+      const set = new Set();
+      for (const part of parts) {
+        const parsed = parseFieldPart(part, min, max, nameMap);
+        if (parsed === null) return null;
+        parsed.forEach(v => set.add(v));
+      }
+      return Array.from(set).sort((a, b) => a - b);
+    }
+
+
+    function explainField(raw, min, max, type) {
+      if (raw === '*') return 'Every ' + type;
+      if (raw.startsWith('*/')) {
+        const step = raw.slice(2);
+        return `Every ${step} ${type}s`;
+      }
+      if (raw.includes('-') && !raw.includes(',')) {
+        return `From ${raw.split('-')[0]} through ${raw.split('-')[1]}`;
+      }
+      if (raw.includes(',')) {
+        return `At ${type}s: ${raw}`;
+      }
+      return `At ${type} ${raw}`;
+    }
+
+    function generateHumanDescription(minArr, hourArr, domArr, monthArr, dowArr, rawParts) {
+      const [rMin, rHour, rDom, rMonth, rDow] = rawParts;
+
+      // Every minute
+      if (rMin === '*' && rHour === '*' && rDom === '*' && rMonth === '*' && rDow === '*') {
+        return 'Every minute, every hour, every day';
+      }
+
+      // Every N minutes
+      if (rMin.startsWith('*/') && rHour === '*' && rDom === '*' && rMonth === '*' && rDow === '*') {
+        return `Every ${rMin.slice(2)} minutes`;
+      }
+
+      // Hourly
+      if (!rMin.includes('*') && !rMin.includes('/') && rHour === '*' && rDom === '*' && rMonth === '*' && rDow === '*') {
+        return `Every hour, at minute ${rMin}`;
+      }
+
+      let timeDesc = '';
+      if (rMin === '*' && rHour !== '*') {
+        timeDesc = `Every minute past hour ${rHour}`;
+      } else if (hourArr.length === 1 && minArr.length === 1) {
+        const h = hourArr[0];
+        const m = minArr[0];
+        const h12 = h % 12 === 0 ? 12 : h % 12;
+        const mm = String(m).padStart(2, '0');
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        timeDesc = `At ${String(h).padStart(2, '0')}:${mm} (${h12}:${mm} ${ampm})`;
+      } else if (rHour.startsWith('*/')) {
+        timeDesc = `Every ${rHour.slice(2)} hours at minute ${rMin}`;
+      } else {
+        timeDesc = `At minute ${rMin} past hour(s) ${rHour}`;
+      }
+
+      // Days description
+      let dayDesc = '';
+      const isEveryDom = rDom === '*';
+      const isEveryDow = rDow === '*';
+
+      if (isEveryDom && isEveryDow) {
+        dayDesc = 'every day';
+      } else if (!isEveryDom && isEveryDow) {
+        dayDesc = `on day ${rDom} of the month`;
+      } else if (isEveryDom && !isEveryDow) {
+        if (rDow === '1-5') {
+          dayDesc = 'every weekday (Monday through Friday)';
+        } else if (rDow === '0,6' || rDow === '6,0') {
+          dayDesc = 'every weekend (Saturday and Sunday)';
+        } else {
+          const days = dowArr.map(d => DOW_LABELS[d % 7]).join(', ');
+          dayDesc = `on ${days}`;
+        }
+      } else {
+        dayDesc = `on day ${rDom} and on ${dowArr.map(d => DOW_LABELS[d % 7]).join(', ')}`;
+      }
+
+      // Month description
+      let monthDesc = '';
+      if (rMonth !== '*') {
+        const months = monthArr.map(m => MONTH_LABELS[m]).join(', ');
+        monthDesc = ` in ${months}`;
+      }
+
+      return `${timeDesc}, ${dayDesc}${monthDesc}`;
+    }
+
+    function calculateNextRuns(minSet, hourSet, domSet, monthSet, dowSet, count = 5) {
+      const localRuns = [];
+      const now = new Date();
+      // Start at next whole minute
+      const cursor = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes() + 1, 0, 0);
+
+      const maxMinutesToCheck = 525600; // 1 year limit
+      let checked = 0;
+
+      while (localRuns.length < count && checked < maxMinutesToCheck) {
+        const m = cursor.getMinutes();
+        const h = cursor.getHours();
+        const dom = cursor.getDate();
+        const mon = cursor.getMonth() + 1;
+        const dow = cursor.getDay(); // 0 = Sun
+
+        if (monthSet.has(mon) && hourSet.has(h) && minSet.has(m)) {
+          // Standard cron day matching: if both are restricted, match if EITHER matches (OR).
+          // If only one is restricted, match that one.
+          const matchesDom = domSet.has(dom);
+          const matchesDow = dowSet.has(dow);
+
+          let dayMatches = false;
+          const domRestricted = domSet.size < 31;
+          const dowRestricted = dowSet.size < 7;
+
+          if (domRestricted && dowRestricted) {
+            dayMatches = matchesDom || matchesDow;
+          } else if (domRestricted) {
+            dayMatches = matchesDom;
+          } else if (dowRestricted) {
+            dayMatches = matchesDow;
+          } else {
+            dayMatches = true;
+          }
+
+          if (dayMatches) {
+            localRuns.push(new Date(cursor.getTime()));
+          }
+        }
+
+        cursor.setMinutes(cursor.getMinutes() + 1);
+        checked++;
+      }
+
+      return localRuns;
+    }
+
+    function formatRelative(targetDate) {
+      const diffMs = targetDate.getTime() - Date.now();
+      const diffMin = Math.round(diffMs / 60000);
+      if (diffMin < 1) return 'in less than a min';
+      if (diffMin < 60) return `in ${diffMin} min${diffMin > 1 ? 's' : ''}`;
+      const diffHours = Math.floor(diffMin / 60);
+      const remMin = diffMin % 60;
+      if (diffHours < 24) return `in ${diffHours}h ${remMin}m`;
+      const diffDays = Math.floor(diffHours / 24);
+      return `in ${diffDays} day${diffDays > 1 ? 's' : ''}`;
+    }
+
+    // --- UI UPDATERS ---
+    const cronInput = document.getElementById('cronInput');
+    const humanText = document.getElementById('humanText');
+    const explanationBanner = document.getElementById('explanationBanner');
+    const fMinVal = document.getElementById('fMinVal');
+    const fMinDesc = document.getElementById('fMinDesc');
+    const fHourVal = document.getElementById('fHourVal');
+    const fHourDesc = document.getElementById('fHourDesc');
+    const fDomVal = document.getElementById('fDomVal');
+    const fDomDesc = document.getElementById('fDomDesc');
+    const fMonthVal = document.getElementById('fMonthVal');
+    const fMonthDesc = document.getElementById('fMonthDesc');
+    const fDowVal = document.getElementById('fDowVal');
+    const fDowDesc = document.getElementById('fDowDesc');
+    const localRunsList = document.getElementById('localRunsList');
+    const utcRunsList = document.getElementById('utcRunsList');
+    const copyParserToast = document.getElementById('copyParserToast');
+
+    function showToast(elem, msg = 'Copied!') {
+      elem.textContent = msg;
+      elem.classList.add('visible');
+      setTimeout(() => elem.classList.remove('visible'), 2000);
+    }
+
+    function updateParser() {
+      let raw = cronInput.value.trim();
+
+      // Check macro
+      if (MACROS[raw.toUpperCase()]) {
+        raw = MACROS[raw.toUpperCase()];
+      }
+
+      const parts = raw.split(/\s+/).filter(Boolean);
+
+      if (parts.length !== 5) {
+        explanationBanner.classList.add('invalid');
+        humanText.innerHTML = `<span class="error-text">Invalid cron format: exactly 5 space-separated fields required (Minute Hour Day Month Weekday). Got ${parts.length}.</span>`;
+        localRunsList.innerHTML = '<li class="run-item" style="color:var(--muted)">Awaiting valid cron expression...</li>';
+        utcRunsList.innerHTML = '<li class="run-item" style="color:var(--muted)">Awaiting valid cron expression...</li>';
+        return;
+      }
+
+      const [rMin, rHour, rDom, rMonth, rDow] = parts;
+
+      // Handle Sunday as 7 for Day of Week
+      let dowToParse = rDow;
+      if (dowToParse.includes('7')) {
+        dowToParse = dowToParse.replace(/\b7\b/g, '0');
+      }
+
+      const minVals = parseField(rMin, 0, 59);
+      const hourVals = parseField(rHour, 0, 23);
+      const domVals = parseField(rDom, 1, 31);
+      const monthVals = parseField(rMonth, 1, 12, MONTH_NAMES);
+      const dowVals = parseField(dowToParse, 0, 6, DOW_NAMES);
+
+      if (!minVals) return markFieldInvalid('Minute (0-59)');
+      if (!hourVals) return markFieldInvalid('Hour (0-23)');
+      if (!domVals) return markFieldInvalid('Day of Month (1-31)');
+      if (!monthVals) return markFieldInvalid('Month (1-12 or JAN-DEC)');
+      if (!dowVals) return markFieldInvalid('Day of Week (0-6 or SUN-SAT)');
+
+      explanationBanner.classList.remove('invalid');
+
+      // Update Field cards
+      fMinVal.textContent = rMin;
+      fMinDesc.textContent = explainField(rMin, 0, 59, 'minute');
+
+      fHourVal.textContent = rHour;
+      fHourDesc.textContent = explainField(rHour, 0, 23, 'hour');
+
+      fDomVal.textContent = rDom;
+      fDomDesc.textContent = explainField(rDom, 1, 31, 'day of month');
+
+      fMonthVal.textContent = rMonth;
+      fMonthDesc.textContent = explainField(rMonth, 1, 12, 'month');
+
+      fDowVal.textContent = rDow;
+      fDowDesc.textContent = explainField(rDow, 0, 6, 'day of week');
+
+      // Human Translation
+      const human = generateHumanDescription(minVals, hourVals, domVals, monthVals, dowVals, parts);
+      humanText.textContent = human;
+
+      // Next Scheduled runs
+      const minSet = new Set(minVals);
+      const hourSet = new Set(hourVals);
+      const domSet = new Set(domVals);
+      const monthSet = new Set(monthVals);
+      const dowSet = new Set(dowVals);
+
+      const runs = calculateNextRuns(minSet, hourSet, domSet, monthSet, dowSet, 5);
+
+      if (runs.length === 0) {
+        localRunsList.innerHTML = '<li class="run-item" style="color:var(--warn)">No matching executions found within the next 365 days.</li>';
+        utcRunsList.innerHTML = '<li class="run-item" style="color:var(--warn)">No matching executions found within the next 365 days.</li>';
+      } else {
+        localRunsList.innerHTML = runs.map((d, i) => `
+          <li class="run-item">
+            <span class="run-num">#${i + 1}</span>
+            <span class="run-time">${d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })} ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            <span class="run-rel">${formatRelative(d)}</span>
+          </li>
+        `).join('');
+
+        utcRunsList.innerHTML = runs.map((d, i) => `
+          <li class="run-item">
+            <span class="run-num">#${i + 1}</span>
+            <span class="run-time">${d.toUTCString().replace(' GMT', ' UTC')}</span>
+            <span class="run-rel">${formatRelative(d)}</span>
+          </li>
+        `).join('');
+      }
+    }
+
+    function markFieldInvalid(fieldName) {
+      explanationBanner.classList.add('invalid');
+      humanText.innerHTML = `<span class="error-text">Invalid value in ${fieldName}. Please verify allowed ranges and syntax.</span>`;
+      localRunsList.innerHTML = '<li class="run-item" style="color:var(--danger)">Error: Expression contains out-of-range or malformed tokens.</li>';
+      utcRunsList.innerHTML = '<li class="run-item" style="color:var(--danger)">Error: Expression contains out-of-range or malformed tokens.</li>';
+    }
+
+    cronInput.addEventListener('input', updateParser);
+
+    // Preset pills click
+    document.querySelectorAll('.preset-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        cronInput.value = btn.dataset.expr;
+        updateParser();
+      });
+    });
+
+    // Copy buttons
+    document.getElementById('copyExprBtn').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(cronInput.value.trim());
+        showToast(copyParserToast, 'Copied expression!');
+      } catch (e) {
+        showToast(copyParserToast, 'Failed to copy');
+      }
+    });
+
+    document.getElementById('copyDescBtn').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(humanText.textContent);
+        showToast(copyParserToast, 'Copied meaning!');
+      } catch (e) {
+        showToast(copyParserToast, 'Failed to copy');
+      }
+    });
+
+    // --- TAB 2: SCHEDULE BUILDER (High Level -> Cron) ---
+    const builderOptions = document.getElementById('builderOptions');
+    const builderOutputCron = document.getElementById('builderOutputCron');
+    const builderHumanDesc = document.getElementById('builderHumanDesc');
+
+    let builderState = {
+      freq: 'daily',
+      minutesInterval: 15,
+      hourlyMinute: 0,
+      dailyTime: '09:00',
+      weeklyDays: ['1', '2', '3', '4', '5'],
+      weeklyTime: '09:00',
+      monthlyDay: 1,
+      monthlyTime: '00:00'
+    };
+
+    function renderBuilderOptions() {
+      if (builderState.freq === 'minutes') {
+        builderOptions.innerHTML = `
+          <div class="builder-row">
+            <span>Every</span>
+            <select id="bMinSelect">
+              <option value="1" ${builderState.minutesInterval == 1 ? 'selected' : ''}>1 minute</option>
+              <option value="2" ${builderState.minutesInterval == 2 ? 'selected' : ''}>2 minutes</option>
+              <option value="5" ${builderState.minutesInterval == 5 ? 'selected' : ''}>5 minutes</option>
+              <option value="10" ${builderState.minutesInterval == 10 ? 'selected' : ''}>10 minutes</option>
+              <option value="15" ${builderState.minutesInterval == 15 ? 'selected' : ''}>15 minutes</option>
+              <option value="20" ${builderState.minutesInterval == 20 ? 'selected' : ''}>20 minutes</option>
+              <option value="30" ${builderState.minutesInterval == 30 ? 'selected' : ''}>30 minutes</option>
+            </select>
+            <span>starting at minute 0</span>
+          </div>
+        `;
+        document.getElementById('bMinSelect').addEventListener('change', (e) => {
+          builderState.minutesInterval = parseInt(e.target.value, 10);
+          updateBuilderCron();
+        });
+      } else if (builderState.freq === 'hourly') {
+        builderOptions.innerHTML = `
+          <div class="builder-row">
+            <span>Every hour at</span>
+            <select id="bHourlyMinute">
+              ${Array.from({length: 60}, (_, i) => `<option value="${i}" ${builderState.hourlyMinute == i ? 'selected' : ''}>minute :${String(i).padStart(2, '0')}</option>`).join('')}
+            </select>
+          </div>
+        `;
+        document.getElementById('bHourlyMinute').addEventListener('change', (e) => {
+          builderState.hourlyMinute = parseInt(e.target.value, 10);
+          updateBuilderCron();
+        });
+      } else if (builderState.freq === 'daily') {
+        builderOptions.innerHTML = `
+          <div class="builder-row">
+            <span>Every day at</span>
+            <input type="time" id="bDailyTime" value="${builderState.dailyTime}">
+          </div>
+        `;
+        document.getElementById('bDailyTime').addEventListener('change', (e) => {
+          builderState.dailyTime = e.target.value || '09:00';
+          updateBuilderCron();
+        });
+      } else if (builderState.freq === 'weekly') {
+        builderOptions.innerHTML = `
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div class="builder-row">
+              <span style="font-weight: 500;">Select Days:</span>
+              <div class="radio-pills" id="weeklyDaysContainer">
+                ${[
+                  { label: 'Mon', val: '1' },
+                  { label: 'Tue', val: '2' },
+                  { label: 'Wed', val: '3' },
+                  { label: 'Thu', val: '4' },
+                  { label: 'Fri', val: '5' },
+                  { label: 'Sat', val: '6' },
+                  { label: 'Sun', val: '0' }
+                ].map(d => `
+                  <div class="pill-radio">
+                    <input type="checkbox" id="wd_${d.val}" value="${d.val}" ${builderState.weeklyDays.includes(d.val) ? 'checked' : ''}>
+                    <label for="wd_${d.val}">${d.label}</label>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+            <div class="builder-row">
+              <span>At time</span>
+              <input type="time" id="bWeeklyTime" value="${builderState.weeklyTime}">
+            </div>
+          </div>
+        `;
+
+        document.getElementById('weeklyDaysContainer').querySelectorAll('input[type="checkbox"]').forEach(chk => {
+          chk.addEventListener('change', () => {
+            const checked = Array.from(document.getElementById('weeklyDaysContainer').querySelectorAll('input:checked')).map(c => c.value);
+            builderState.weeklyDays = checked.length ? checked : ['1'];
+            updateBuilderCron();
+          });
+        });
+
+        document.getElementById('bWeeklyTime').addEventListener('change', (e) => {
+          builderState.weeklyTime = e.target.value || '09:00';
+          updateBuilderCron();
+        });
+      } else if (builderState.freq === 'monthly') {
+        builderOptions.innerHTML = `
+          <div class="builder-row">
+            <span>On day</span>
+            <select id="bMonthlyDay">
+              ${Array.from({length: 31}, (_, i) => `<option value="${i + 1}" ${builderState.monthlyDay == (i + 1) ? 'selected' : ''}>Day ${i + 1}</option>`).join('')}
+            </select>
+            <span>of every month at</span>
+            <input type="time" id="bMonthlyTime" value="${builderState.monthlyTime}">
+          </div>
+        `;
+
+        document.getElementById('bMonthlyDay').addEventListener('change', (e) => {
+          builderState.monthlyDay = parseInt(e.target.value, 10);
+          updateBuilderCron();
+        });
+
+        document.getElementById('bMonthlyTime').addEventListener('change', (e) => {
+          builderState.monthlyTime = e.target.value || '00:00';
+          updateBuilderCron();
+        });
+      }
+
+      updateBuilderCron();
+    }
+
+    function updateBuilderCron() {
+      let cron = '* * * * *';
+      let desc = '';
+
+      if (builderState.freq === 'minutes') {
+        const step = builderState.minutesInterval;
+        cron = step === 1 ? '* * * * *' : `*/${step} * * * *`;
+        desc = step === 1 ? 'Every minute' : `Every ${step} minutes`;
+      } else if (builderState.freq === 'hourly') {
+        const m = builderState.hourlyMinute;
+        cron = `${m} * * * *`;
+        desc = `Every hour at minute :${String(m).padStart(2, '0')}`;
+      } else if (builderState.freq === 'daily') {
+        const [hh, mm] = (builderState.dailyTime || '09:00').split(':').map(v => parseInt(v, 10));
+        cron = `${mm} ${hh} * * *`;
+        const h12 = hh % 12 === 0 ? 12 : hh % 12;
+        desc = `At ${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')} (${h12}:${String(mm).padStart(2, '0')} ${hh >= 12 ? 'PM' : 'AM'}), every day`;
+      } else if (builderState.freq === 'weekly') {
+        const [hh, mm] = (builderState.weeklyTime || '09:00').split(':').map(v => parseInt(v, 10));
+        const days = builderState.weeklyDays.sort().join(',');
+        cron = `${mm} ${hh} * * ${days || '1'}`;
+        const dayNames = builderState.weeklyDays.map(d => DOW_LABELS[parseInt(d, 10)]).join(', ');
+        desc = `At ${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')} on ${dayNames}`;
+      } else if (builderState.freq === 'monthly') {
+        const [hh, mm] = (builderState.monthlyTime || '00:00').split(':').map(v => parseInt(v, 10));
+        const dom = builderState.monthlyDay;
+        cron = `${mm} ${hh} ${dom} * *`;
+        desc = `At ${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')} on day ${dom} of every month`;
+      }
+
+      builderOutputCron.textContent = cron;
+      builderHumanDesc.textContent = desc;
+    }
+
+    document.querySelectorAll('input[name="builderFreq"]').forEach(r => {
+      r.addEventListener('change', (e) => {
+        builderState.freq = e.target.value;
+        renderBuilderOptions();
+      });
+    });
+
+    document.getElementById('builderCopyBtn').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(builderOutputCron.textContent.trim());
+        const origText = document.getElementById('builderCopyBtn').textContent;
+        document.getElementById('builderCopyBtn').textContent = 'Copied!';
+        setTimeout(() => document.getElementById('builderCopyBtn').textContent = origText, 1500);
+      } catch (e) {}
+    });
+
+    document.getElementById('builderInspectBtn').addEventListener('click', () => {
+      cronInput.value = builderOutputCron.textContent.trim();
+      switchTab('tab-parser');
+      updateParser();
+    });
+
+    // Initial render
+    renderBuilderOptions();
+    updateParser();
+  </script>
+</body>
+</html>
