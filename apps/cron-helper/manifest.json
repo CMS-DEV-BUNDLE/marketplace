@@ -1,0 +1,23 @@
+{
+  "id": "cron-helper",
+  "name": "Cron Helper",
+  "version": "1.0.0",
+  "description": "Understand, convert, and build cron expressions with human-readable explanations and schedule previews",
+  "icon": "icon.svg",
+  "main": "index.html",
+  "entry": "index.html",
+  "category": "utilities",
+  "permissions": ["clipboard"],
+  "tabs": {
+    "allowMultiple": true,
+    "allowDuplicates": true
+  },
+  "window": {
+    "minWidth": 720,
+    "minHeight": 480
+  },
+  "author": {
+    "name": "Dev-Toolkit Core",
+    "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
+  }
+}
