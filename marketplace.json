@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-11-16T13:10:21.999Z",
+  "updatedAt": "2026-11-16T13:21:05.717Z",
   "appsCount": 9,
   "apps": [
     {
@@ -189,13 +189,13 @@
       "category": "utilities",
       "icon": "icon.svg",
       "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/cron-helper.svg",
-      "size": "11.0 KB",
+      "size": "11.2 KB",
       "archive": {
         "fileName": "cron-helper-1.0.0.zip",
         "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/cron-helper-1.0.0.zip",
         "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/cron-helper-1.0.0.zip",
-        "sha256": "9fea0ce7a324c8d5b67484e4573e2bf7e461e1188f6ca7b5ad3c590e41e69955",
-        "downloadBytes": 11300
+        "sha256": "8a8126f37be1c0e30d574d9918e8c63e4530bd6026bb197868ef9904777e50c5",
+        "downloadBytes": 11455
       },
       "permissions": [
         "clipboard"
