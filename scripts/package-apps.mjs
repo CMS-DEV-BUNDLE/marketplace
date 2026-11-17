@@ -29,6 +29,8 @@ const CATEGORIES = {
   json4swift: 'converters',
   'world-clock': 'utilities',
   'live-text': 'security',
+  'markdown-editor': 'utilities',
+  'cron-helper': 'utilities',
 };
 
 function formatSize(bytes) {

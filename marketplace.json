@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-11-16T13:21:05.717Z",
-  "appsCount": 9,
+  "updatedAt": "2026-11-17T05:25:48.937Z",
+  "appsCount": 10,
   "apps": [
     {
       "id": "color-picker",
@@ -16,13 +16,13 @@
         "fileName": "color-picker-1.0.0.zip",
         "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/color-picker-1.0.0.zip",
         "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/color-picker-1.0.0.zip",
-        "sha256": "0477f162467d5529c71bbd7c2ced339f647dc62175cbebf0a1f0af5baf03c207",
-        "downloadBytes": 9215
+        "sha256": "bc79ce2c0aa840e0fd49a0c1a52a28b6a3981d8ecb1cb2fec85316e3165643a8",
+        "downloadBytes": 9263
       },
       "permissions": [],
       "author": {
         "name": "Dev-Toolkit Core",
-        "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
       }
     },
     {
@@ -33,18 +33,18 @@
       "category": "formatters",
       "icon": "icon.svg",
       "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/diff.svg",
-      "size": "9.3 KB",
+      "size": "9.5 KB",
       "archive": {
         "fileName": "diff-1.0.0.zip",
         "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/diff-1.0.0.zip",
         "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/diff-1.0.0.zip",
-        "sha256": "5ed9cb2cbc305621995ea6e534fbea4b4551aa764680c2b05a12b379e0de5237",
-        "downloadBytes": 9558
+        "sha256": "17a5e4104ba90088914ad727aec119970e66de1c24ad3a2e52dc7c591abc8f20",
+        "downloadBytes": 9705
       },
       "permissions": [],
       "author": {
         "name": "Dev-Toolkit Core",
-        "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
       }
     },
     {
@@ -55,18 +55,18 @@
       "category": "formatters",
       "icon": "icon.svg",
       "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/json-beautify.svg",
-      "size": "5.7 KB",
+      "size": "5.8 KB",
       "archive": {
         "fileName": "json-beautify-1.0.0.zip",
         "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/json-beautify-1.0.0.zip",
         "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/json-beautify-1.0.0.zip",
-        "sha256": "1d03be8ddcc5bc4f3da8416b56fe42134e7eaa3fd6d3bdd8e8301167e56e06a6",
-        "downloadBytes": 5794
+        "sha256": "2b9b98422f3b11c4df6dd75d7cebddb16488c4cb3a86d3b507aeb5d0bc9564a3",
+        "downloadBytes": 5975
       },
       "permissions": [],
       "author": {
         "name": "Dev-Toolkit Core",
-        "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
       }
     },
     {
@@ -77,18 +77,18 @@
       "category": "converters",
       "icon": "icon.svg",
       "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/json-to-table.svg",
-      "size": "15.8 KB",
+      "size": "15.9 KB",
       "archive": {
         "fileName": "json-to-table-1.0.0.zip",
         "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/json-to-table-1.0.0.zip",
         "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/json-to-table-1.0.0.zip",
-        "sha256": "fb9f1841dd8b346c3fb32d08c7a87e067e5f8556ee9dad107050be069d2f4124",
-        "downloadBytes": 16176
+        "sha256": "c8e488065148d0d2194587005302d5d02318bcfaa859b3bc3b0fe8434ca88a89",
+        "downloadBytes": 16266
       },
       "permissions": [],
       "author": {
         "name": "Dev-Toolkit Core",
-        "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
       }
     },
     {
@@ -99,18 +99,18 @@
       "category": "converters",
       "icon": "icon.svg",
       "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/json4swift.svg",
-      "size": "9.6 KB",
+      "size": "9.7 KB",
       "archive": {
         "fileName": "json4swift-1.0.0.zip",
         "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/json4swift-1.0.0.zip",
         "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/json4swift-1.0.0.zip",
-        "sha256": "91a22251ea298950717d3312cf3854ed3e89df8b2ad039c8192c07b859ae6f68",
-        "downloadBytes": 9852
+        "sha256": "c9af3826370aeb165176ac6e0544eed9afce62fc41654edcf36c0aaf9f87db94",
+        "downloadBytes": 9966
       },
       "permissions": [],
       "author": {
         "name": "Dev-Toolkit Core",
-        "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
       }
     },
     {
@@ -121,18 +121,18 @@
       "category": "security",
       "icon": "icon.svg",
       "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/jwt-io.svg",
-      "size": "7.8 KB",
+      "size": "7.9 KB",
       "archive": {
         "fileName": "jwt-io-1.0.0.zip",
         "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/jwt-io-1.0.0.zip",
         "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/jwt-io-1.0.0.zip",
-        "sha256": "4932604f0acd228b79400fa31caab4640643eb8b737c5199cf2f34ef26bd7f78",
-        "downloadBytes": 7985
+        "sha256": "137ab3f1391de0f00058782ca57a2cf569340f2afd10e6b19f22b8ff40407a78",
+        "downloadBytes": 8090
       },
       "permissions": [],
       "author": {
         "name": "Dev-Toolkit Core",
-        "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
       }
     },
     {
@@ -148,15 +148,15 @@
         "fileName": "live-text-1.0.0.zip",
         "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/live-text-1.0.0.zip",
         "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/live-text-1.0.0.zip",
-        "sha256": "2a7706b9956df93d26e2ac921b46b89c081b00157f492a4611d4189fc490ed11",
-        "downloadBytes": 5095997
+        "sha256": "638166d705be9eedf4b275af4cd36707fb9c9064e28d2eb9ac5843279215b611",
+        "downloadBytes": 5096121
       },
       "permissions": [
         "clipboard"
       ],
       "author": {
         "name": "Dev-Toolkit Core",
-        "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
       }
     },
     {
@@ -167,18 +167,18 @@
       "category": "utilities",
       "icon": "icon.svg",
       "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/world-clock.svg",
-      "size": "11.8 KB",
+      "size": "11.9 KB",
       "archive": {
         "fileName": "world-clock-1.0.0.zip",
         "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/world-clock-1.0.0.zip",
         "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/world-clock-1.0.0.zip",
-        "sha256": "7841f3d17c9b6a18f267da3e0da4ec3cd22be688911617d084a37832c039c9ca",
-        "downloadBytes": 12086
+        "sha256": "7ab77d52fb3458bd355d080106e3cce01ff9ea9a98af847ae1e6a4620183a7fb",
+        "downloadBytes": 12196
       },
       "permissions": [],
       "author": {
         "name": "Dev-Toolkit Core",
-        "url": "https://github.com/CMS-DEV-BUNDLE/RODENT"
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
       }
     },
     {
@@ -194,11 +194,36 @@
         "fileName": "cron-helper-1.0.0.zip",
         "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/cron-helper-1.0.0.zip",
         "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/cron-helper-1.0.0.zip",
-        "sha256": "8a8126f37be1c0e30d574d9918e8c63e4530bd6026bb197868ef9904777e50c5",
+        "sha256": "6e535b54eeab97a82e31fa43700ce29870966dc12f0b7c56a8ec72d89e1d3fec",
         "downloadBytes": 11455
       },
       "permissions": [
         "clipboard"
+      ],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
+      }
+    },
+    {
+      "id": "markdown-editor",
+      "name": "Markdown Editor",
+      "version": "1.0.0",
+      "description": "A secure, privacy-first Markdown editor with live preview.",
+      "category": "utilities",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/markdown-editor.svg",
+      "size": "31.2 KB",
+      "archive": {
+        "fileName": "markdown-editor-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/markdown-editor-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/markdown-editor-1.0.0.zip",
+        "sha256": "01e216e639de24339bcf60efa1bb26253a2c844214c1a5bf90f452b86417d75f",
+        "downloadBytes": 31999
+      },
+      "permissions": [
+        "clipboard",
+        "files"
       ],
       "author": {
         "name": "Dev-Toolkit Core",

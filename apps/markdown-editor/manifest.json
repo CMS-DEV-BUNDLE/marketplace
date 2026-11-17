@@ -4,6 +4,11 @@
   "version": "1.0.0",
   "description": "A secure, privacy-first Markdown editor with live preview.",
   "icon": "icon.svg",
+  "entry": "index.html",
   "main": "index.html",
-  "permissions": ["clipboard", "files"]
+  "permissions": ["clipboard", "files"],
+  "author": {
+    "name": "Dev-Toolkit Core",
+    "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
+  }
 }
