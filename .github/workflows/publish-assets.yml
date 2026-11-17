@@ -8,6 +8,7 @@ on:
       - 'apps/**'
       - 'marketplace.json'
       - 'scripts/**'
+      - 'index.html'
   workflow_dispatch:
 
 permissions:

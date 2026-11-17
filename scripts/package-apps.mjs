@@ -134,6 +134,15 @@ async function main() {
   await writeFile(configPath, JSON.stringify(currentConfig, null, 2), 'utf-8');
   await copyFile(configPath, join(DIST_DIR, 'marketplace.json'));
 
+  // Copy landing page index.html to dist/
+  const indexPath = resolve('index.html');
+  try {
+    await copyFile(indexPath, join(DIST_DIR, 'index.html'));
+    console.log(`📄 Copied landing page index.html to ${join(DIST_DIR, 'index.html')}`);
+  } catch (err) {
+    console.warn('⚠️ No index.html found at repository root to copy:', err.message);
+  }
+
   console.log(`\n🎉 Packaged ${packagedApps.length} apps into ${DIST_APPS_DIR}`);
   console.log(`📑 Marketplace catalog updated: ${configPath}`);
 
