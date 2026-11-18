@@ -28,7 +28,7 @@ const CATEGORIES = {
   'json-to-table': 'converters',
   json4swift: 'converters',
   'world-clock': 'utilities',
-  'live-text': 'security',
+  'live-text': 'utilities',
   'markdown-editor': 'utilities',
   'cron-helper': 'utilities',
 };

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-11-17T11:36:33.927Z",
+  "updatedAt": "2026-11-18T05:59:37.393Z",
   "appsCount": 10,
   "apps": [
     {
@@ -140,7 +140,7 @@
       "name": "Live Text OCR",
       "version": "1.0.0",
       "description": "Extract, visually select, and copy text directly from images",
-      "category": "security",
+      "category": "utilities",
       "icon": "icon.svg",
       "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/live-text.svg",
       "size": "4.9 MB",

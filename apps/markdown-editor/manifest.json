@@ -6,7 +6,16 @@
   "icon": "icon.svg",
   "entry": "index.html",
   "main": "index.html",
+  "category": "utilities",
   "permissions": ["clipboard", "files"],
+  "tabs": {
+    "allowMultiple": true,
+    "allowDuplicates": true
+  },
+  "window": {
+    "minWidth": 720,
+    "minHeight": 480
+  },
   "author": {
     "name": "Dev-Toolkit Core",
     "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
