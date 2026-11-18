@@ -5,7 +5,7 @@
  * Creates zip archives, extracts icons, calculates SHA-256 hashes, and prepares dist/ for GitHub Pages.
  */
 
-import { readdir, readFile, writeFile, mkdir, stat, copyFile, appendFile } from 'node:fs/promises';
+import { readdir, readFile, writeFile, mkdir, stat, copyFile, cp, appendFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -141,6 +141,15 @@ async function main() {
     console.log(`📄 Copied landing page index.html to ${join(DIST_DIR, 'index.html')}`);
   } catch (err) {
     console.warn('⚠️ No index.html found at repository root to copy:', err.message);
+  }
+
+  // Copy static brand assets to dist/
+  const assetsDir = resolve('assets');
+  try {
+    await cp(assetsDir, join(DIST_DIR, 'assets'), { recursive: true });
+    console.log(`🖼️ Copied brand assets to ${join(DIST_DIR, 'assets')}`);
+  } catch (err) {
+    console.warn('⚠️ No assets directory found to copy:', err.message);
   }
 
   console.log(`\n🎉 Packaged ${packagedApps.length} apps into ${DIST_APPS_DIR}`);

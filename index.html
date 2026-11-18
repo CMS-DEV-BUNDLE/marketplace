@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Rodent — Air-Gapped Desktop OS for Developer Mini-Apps</title>
   <meta name="description" content="Local-first, air-gapped desktop workspace for sandboxed developer utilities. Zero telemetry, offline cryptography, and high-performance mini-app marketplace.">
-  <link rel="icon" type="image/svg+xml" href="icons/diff.svg">
+  <link rel="icon" type="image/png" href="assets/icon.png">
+  <link rel="apple-touch-icon" href="assets/icon-256.png">
   <style>
     :root {
       --bg: #070908;
@@ -131,15 +132,17 @@
       letter-spacing: -0.02em;
     }
 
-    .brand-logo svg {
+    .brand-logo-img {
       width: 28px;
       height: 28px;
-      color: var(--accent);
-      transition: transform 0.2s;
+      border-radius: 6px;
+      object-fit: cover;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .brand-logo:hover svg {
-      transform: scale(1.08) rotate(4deg);
+    .brand-logo:hover .brand-logo-img {
+      transform: scale(1.1) rotate(4deg);
     }
 
     .badge-tag {
@@ -964,12 +967,7 @@
   <header class="site-nav">
     <div class="nav-inner">
       <a href="#" class="brand-logo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="9.5"></circle>
-          <path d="M12 2.5v19"></path>
-          <path d="M2.5 12h19"></path>
-          <circle cx="12" cy="12" r="3.5" fill="currentColor"></circle>
-        </svg>
+        <img class="brand-logo-img" src="assets/icon.png" alt="Rodent">
         <span>Rodent</span>
         <span class="badge-tag">v1.3.4</span>
       </a>
@@ -1082,6 +1080,10 @@
         <div class="sim-body">
           <!-- Sidebar -->
           <div class="sim-sidebar">
+            <div style="display: flex; align-items: center; gap: 8px; padding: 12px 14px 10px; border-bottom: 1px solid var(--line);">
+              <img src="assets/icon.png" alt="Rodent" style="width: 20px; height: 20px; border-radius: 4px; object-fit: cover;">
+              <span style="font-weight: 600; font-size: 13.5px; color: var(--ink);">Rodent</span>
+            </div>
             <div class="sim-nav-header">Workspace Apps</div>
             
             <div class="sim-nav-item active" data-app="cron">
@@ -1544,13 +1546,8 @@ main {
   <!-- SITE FOOTER -->
   <footer class="site-footer">
     <div class="footer-inner">
-      <div class="footer-left">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent);">
-          <circle cx="12" cy="12" r="9.5"></circle>
-          <path d="M12 2.5v19"></path>
-          <path d="M2.5 12h19"></path>
-          <circle cx="12" cy="12" r="3.5" fill="currentColor"></circle>
-        </svg>
+      <div class="footer-left" style="display: flex; align-items: center; gap: 10px;">
+        <img src="assets/icon.png" alt="Rodent" style="width: 20px; height: 20px; border-radius: 4px; object-fit: cover;">
         <span>&copy; 2026 CMS-DEV-BUNDLE. Open source under MIT License.</span>
       </div>
 

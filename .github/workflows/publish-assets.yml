@@ -9,6 +9,7 @@ on:
       - 'marketplace.json'
       - 'scripts/**'
       - 'index.html'
+      - 'assets/**'
   workflow_dispatch:
 
 permissions:
