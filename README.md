@@ -23,7 +23,7 @@ brew install --cask CMS-DEV-BUNDLE/tap/rodent
 curl -fsSL https://raw.githubusercontent.com/CMS-DEV-BUNDLE/marketplace/master/install.sh | bash
 ```
 
-The script installs the latest release (pin one with `RODENT_VERSION=1.3.3`). On macOS it puts `Rodent.app` in `/Applications`, or `~/Applications` if that isn't writable. On Linux it installs the AppImage to `~/.local/bin/rodent`.
+The script installs the latest release (pin one with `RODENT_VERSION=1.3.5`). On macOS it puts `Rodent.app` in `/Applications`, or `~/Applications` if that isn't writable. On Linux it installs the AppImage to `~/.local/bin/rodent`.
 
 Rodent is not yet signed with an Apple Developer ID, so a copy downloaded manually in a browser is blocked by Gatekeeper ("Rodent is damaged and can't be opened"). The app is not damaged. Pick one:
 
