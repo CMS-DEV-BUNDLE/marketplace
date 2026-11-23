@@ -1,0 +1,234 @@
+{
+  "schemaVersion": "1.0.0",
+  "updatedAt": "2026-11-23T10:11:27.478Z",
+  "appsCount": 10,
+  "apps": [
+    {
+      "id": "color-picker",
+      "name": "Colour Picker",
+      "version": "1.0.0",
+      "description": "Colour formats, palette shades, and WCAG contrast checker",
+      "category": "utilities",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/color-picker.svg",
+      "size": "9.0 KB",
+      "archive": {
+        "fileName": "color-picker-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/color-picker-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/color-picker-1.0.0.zip",
+        "sha256": "bc79ce2c0aa840e0fd49a0c1a52a28b6a3981d8ecb1cb2fec85316e3165643a8",
+        "downloadBytes": 9263
+      },
+      "permissions": [],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
+      }
+    },
+    {
+      "id": "diff",
+      "name": "Diff",
+      "version": "1.0.0",
+      "description": "JSON and text diff",
+      "category": "formatters",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/diff.svg",
+      "size": "9.5 KB",
+      "archive": {
+        "fileName": "diff-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/diff-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/diff-1.0.0.zip",
+        "sha256": "17a5e4104ba90088914ad727aec119970e66de1c24ad3a2e52dc7c591abc8f20",
+        "downloadBytes": 9705
+      },
+      "permissions": [],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
+      }
+    },
+    {
+      "id": "json-beautify",
+      "name": "JSON Beautify",
+      "version": "1.0.0",
+      "description": "Beautify, format, and minify JSON",
+      "category": "formatters",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/json-beautify.svg",
+      "size": "5.8 KB",
+      "archive": {
+        "fileName": "json-beautify-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/json-beautify-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/json-beautify-1.0.0.zip",
+        "sha256": "2b9b98422f3b11c4df6dd75d7cebddb16488c4cb3a86d3b507aeb5d0bc9564a3",
+        "downloadBytes": 5975
+      },
+      "permissions": [],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
+      }
+    },
+    {
+      "id": "json-to-table",
+      "name": "JSON to Table",
+      "version": "1.0.0",
+      "description": "Convert complex nested JSON into interactive tables with tree view, live editing, and export",
+      "category": "converters",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/json-to-table.svg",
+      "size": "15.9 KB",
+      "archive": {
+        "fileName": "json-to-table-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/json-to-table-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/json-to-table-1.0.0.zip",
+        "sha256": "c8e488065148d0d2194587005302d5d02318bcfaa859b3bc3b0fe8434ca88a89",
+        "downloadBytes": 16266
+      },
+      "permissions": [],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
+      }
+    },
+    {
+      "id": "json4swift",
+      "name": "Json4Swift",
+      "version": "1.0.0",
+      "description": "Convert JSON into Swift Codable models",
+      "category": "converters",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/json4swift.svg",
+      "size": "9.7 KB",
+      "archive": {
+        "fileName": "json4swift-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/json4swift-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/json4swift-1.0.0.zip",
+        "sha256": "c9af3826370aeb165176ac6e0544eed9afce62fc41654edcf36c0aaf9f87db94",
+        "downloadBytes": 9966
+      },
+      "permissions": [],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
+      }
+    },
+    {
+      "id": "jwt-io",
+      "name": "JWT.io",
+      "version": "1.0.0",
+      "description": "Decode, verify, and generate JSON Web Tokens (JWT) offline",
+      "category": "security",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/jwt-io.svg",
+      "size": "7.9 KB",
+      "archive": {
+        "fileName": "jwt-io-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/jwt-io-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/jwt-io-1.0.0.zip",
+        "sha256": "137ab3f1391de0f00058782ca57a2cf569340f2afd10e6b19f22b8ff40407a78",
+        "downloadBytes": 8090
+      },
+      "permissions": [],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
+      }
+    },
+    {
+      "id": "live-text",
+      "name": "Live Text OCR",
+      "version": "1.0.0",
+      "description": "Extract, visually select, and copy text directly from images",
+      "category": "utilities",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/live-text.svg",
+      "size": "4.9 MB",
+      "archive": {
+        "fileName": "live-text-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/live-text-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/live-text-1.0.0.zip",
+        "sha256": "638166d705be9eedf4b275af4cd36707fb9c9064e28d2eb9ac5843279215b611",
+        "downloadBytes": 5096121
+      },
+      "permissions": [
+        "clipboard"
+      ],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
+      }
+    },
+    {
+      "id": "world-clock",
+      "name": "World Clock",
+      "version": "1.0.0",
+      "description": "Visual world clock, interactive daylight timeline, and multi-timezone converter",
+      "category": "utilities",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/world-clock.svg",
+      "size": "11.9 KB",
+      "archive": {
+        "fileName": "world-clock-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/world-clock-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/world-clock-1.0.0.zip",
+        "sha256": "7ab77d52fb3458bd355d080106e3cce01ff9ea9a98af847ae1e6a4620183a7fb",
+        "downloadBytes": 12196
+      },
+      "permissions": [],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
+      }
+    },
+    {
+      "id": "cron-helper",
+      "name": "Cron Helper",
+      "version": "1.0.0",
+      "description": "Understand, convert, and build cron expressions with human-readable explanations and schedule previews",
+      "category": "utilities",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/cron-helper.svg",
+      "size": "11.2 KB",
+      "archive": {
+        "fileName": "cron-helper-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/cron-helper-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/cron-helper-1.0.0.zip",
+        "sha256": "6e535b54eeab97a82e31fa43700ce29870966dc12f0b7c56a8ec72d89e1d3fec",
+        "downloadBytes": 11455
+      },
+      "permissions": [
+        "clipboard"
+      ],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
+      }
+    },
+    {
+      "id": "markdown-editor",
+      "name": "Markdown Editor",
+      "version": "1.0.0",
+      "description": "A secure, privacy-first Markdown editor with live preview.",
+      "category": "utilities",
+      "icon": "icon.svg",
+      "iconUrl": "https://cms-dev-bundle.github.io/marketplace/icons/markdown-editor.svg",
+      "size": "31.2 KB",
+      "archive": {
+        "fileName": "markdown-editor-1.0.0.zip",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace/releases/download/v1.0.0/markdown-editor-1.0.0.zip",
+        "pagesUrl": "https://cms-dev-bundle.github.io/marketplace/apps/markdown-editor-1.0.0.zip",
+        "sha256": "01e216e639de24339bcf60efa1bb26253a2c844214c1a5bf90f452b86417d75f",
+        "downloadBytes": 31999
+      },
+      "permissions": [
+        "clipboard",
+        "files"
+      ],
+      "author": {
+        "name": "Dev-Toolkit Core",
+        "url": "https://github.com/CMS-DEV-BUNDLE/marketplace"
+      }
+    }
+  ]
+}
